@@ -64,14 +64,6 @@
                     </div>
                 </div>
 
-                <div class="mealmate-item" id="mealmate-item">
-                    <div class="mealmate-image"></div>
-                    <div class="mealmate-details">
-                        <div class="mealmate-name">밥친구</div>
-                        <div class="mealmate-bio">같이 밥 먹을 친구를 찾고 있나요? 밥메이트에서 함께 맛있는 시간을 보낼 친구를 만나보세요!</div>
-                    </div>
-                </div>
-
                 <div class="carpool-item" id="carpool-item">
                     <div class="carpool-image"></div>
                     <div class="carpool-details">
@@ -101,17 +93,6 @@
                 <h2>두유는 사랑을 타고(두사타) 소개</h2>
            	    <p>낭만적인 캠퍼스 생활을 이대로 보내실건가요? 러브메이트에서 당신의 이상형을 만나보세요. 대화를 통해 더 깊고 성공적인 두사타!</p>
                 <p>지금 바로 SU-mate와 함께 여러분의 사랑을 찾아보세요!</p>
-            </div>
-        </div>
-        <div class="divider"></div>
-        <div class="feature-content" id="mealmate-desc">
-            <div class="feature-image">
-                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
-            </div>
-            <div class="feature-description">
-                <h2>밥친구 매칭 소개</h2>
-                <p>공강에 혼자 밥 먹기 지루한가요? 밥메이트에서 함께 맛집 탐방할 친구를 찾아보세요. 취향이 같은 사람과 함께 맛있는 식사를!</p>
-                <p>지금 바로 SU-mate와 함께 여러분의 밥 메이트를 찾아보세요!</p>           
             </div>
         </div>
         <div class="divider"></div>

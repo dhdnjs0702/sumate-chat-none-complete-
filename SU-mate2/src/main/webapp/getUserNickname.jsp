@@ -9,7 +9,12 @@
     String uid = (String) session.getAttribute("id");
     
     if (uid == null || uid.isEmpty()) {
-        out.print("Guest"); // 로그인하지 않은 경우
+%>
+        <script>
+            alert("잘못된 접근입니다.");
+            location.href = "mainPage.jsp";
+        </script>
+<%
     } else {
         UserDAO userDAO = new UserDAO();
         try {

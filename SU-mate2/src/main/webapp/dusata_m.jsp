@@ -102,9 +102,10 @@ function show(feeds) {
         if (img && img.trim() !== "") {
             imgstr = "<img src='" + img + "' width='100%' onerror='this.style.display=\"none\"'>";
         }
-        var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";        
-     
-        str += "<div class='postit'>";
+        var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
+        var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
+        
+        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\")'>"; // onclick 이벤트 추가
         str += "<div><small>" + nickname + "</small>&nbsp;<small>(" + feeds[i].ts + ")</small></div>";
         str += "<div>" + imgstr + "</div>";
         str += "<div class='postit-content'>" + feeds[i].content + "</div>";
@@ -112,6 +113,15 @@ function show(feeds) {
     }
     str += "</div>";
     $("#feedContainer").append(str);  // append를 사용하여 기존 내용에 추가
+}
+
+// 채팅방으로 이동하는 함수
+function redirectToChat(toID) {
+    if (toID && toID.trim() !== "") {
+        window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
+    } else {
+        alert("잘못된 유저 정보입니다.");
+    }
 }
 
 function addFeed() {
