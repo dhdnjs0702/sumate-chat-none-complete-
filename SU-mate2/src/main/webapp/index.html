@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메인페이지(로그인 전)</title>
+<link rel="stylesheet" href="css/main_styles.css">
+</head>
+<body>
+ <div class="main-container">
+<div class="header">
+            <div class="logo"></div>
+            <div class="title" id="title">SU-mate</div>
+       		
+            <div class="menu">
+                <a href="jsp/roomMate.jsp" class="menu-item">기숙사 룸메이트</a>
+                <a href="jsp/dusata_m.jsp" class="menu-item">두유는 사랑을 타고</a>
+                <a href="jsp/mealCompanion.jsp" class="menu-item">밥친구</a>
+                <a href="jsp/carPool.jsp" class="menu-item">카풀</a>
+                <div class="search-bar">
+                    <form action="jsp/login.jsp" class="search-form">
+                        <button type="submit" class="search-button">로그인 / 회원가입</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="intro-section">
+            <div class="divider"></div>
+            <div class="intro-text">
+                <div class="welcome">안녕하세요! 여러분들의 영원한 친구 SU-mate입니다!</div>
+                <div class="description">지금 바로 SU-mate와 함께 나에게 맞는 친구를 찾아보세요</div>
+                <form class="get-started" action="jsp/login.jsp">
+                     <input type="submit" value="시작하기" class="get-started-button">
+                </form>
+            </div>
+  </div>
+  <div class="divider"></div>
+
+<!-- 헤더 부분 -->
+
+<div class="roommate-list">
+                <div class="roommate-item" id="roommate-item">
+                    <div class="roommate-image"></div>
+                    <div class="roommate-details">
+                        <div class="roommate-name">기숙사 룸메이트 매칭</div>
+                        <div class="roommate-bio">완벽한 룸메이트를 찾고 계신가요? 룸메이트에서 당신과 잘 맞는 친구를 찾아보세요!</div>
+                    </div>
+                </div>
+
+                <div class="dusata-item" id="dusata-item">
+                    <div class="dusata-image"></div>
+                    <div class="dusata-details">
+                        <div class="dusata-name">두유는 사랑을 타고(두사타)</div>
+                        <div class="dusata-bio">캠퍼스에서 특별한 인연을 찾고 싶으신가요? 이젠 두사타도 온라인으로!</div>
+                    </div>
+                </div>
+
+                <div class="mealmate-item" id="mealmate-item">
+                    <div class="mealmate-image"></div>
+                    <div class="mealmate-details">
+                        <div class="mealmate-name">밥친구</div>
+                        <div class="mealmate-bio">같이 밥 먹을 친구를 찾고 있나요? 밥메이트에서 함께 맛있는 시간을 보낼 친구를 만나보세요!</div>
+                    </div>
+                </div>
+
+                <div class="carpool-item" id="carpool-item">
+                    <div class="carpool-image"></div>
+                    <div class="carpool-details">
+                        <div class="carpool-name">카풀</div>
+                        <div class="carpool-bio">같은 방향으로 가는 친구를 찾고 있나요? 카풀메이트에서 함께 이동할 친구를 구하세요!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+        <!--여기까지는 그림과 간단한 설명만 들어갑니다-->
+               <div class="feature-content" id="roommate-desc">
+            <div class="feature-image">
+                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+            </div>
+            <div class="feature-description">
+                <h2>기숙사 룸메이트 매칭 소개</h2>
+               	<p>한 학기를 같이 지내는데 아무나 구하시나요? 룸메이트에서 당신과 잘 맞는 친구를 찾아보세요. 편안하고 즐거운 기숙사 생활이 만족스러운 한 학기를 시작입니다.</p>
+                <p>지금 바로 SU-mate와 함께 여러분의 룸 메이트를 찾아보세요!</p>
+            </div>
+        </div> 
+        <div class="divider"></div>
+        <div class="feature-content" id="dusata-desc">
+            <div class="feature-image">
+                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+            </div>
+            <div class="feature-description">
+                <h2>두유는 사랑을 타고(두사타) 소개</h2>
+           	    <p>낭만적인 캠퍼스 생활을 이대로 보내실건가요? 러브메이트에서 당신의 이상형을 만나보세요. 대화를 통해 더 깊고 성공적인 두사타!</p>
+                <p>지금 바로 SU-mate와 함께 여러분의 사랑을 찾아보세요!</p>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="feature-content" id="mealmate-desc">
+            <div class="feature-image">
+                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+            </div>
+            <div class="feature-description">
+                <h2>밥친구 매칭 소개</h2>
+                <p>공강에 혼자 밥 먹기 지루한가요? 밥메이트에서 함께 맛집 탐방할 친구를 찾아보세요. 취향이 같은 사람과 함께 맛있는 식사를!</p>
+                <p>지금 바로 SU-mate와 함께 여러분의 밥 메이트를 찾아보세요!</p>           
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="feature-content" id="carpool-desc">
+            <div class="feature-image">
+                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+            </div>
+            <div class="feature-description">
+                <h2>카풀 매칭 소개</h2>
+                <p>혼자 등교하기 비효율적이고 심심하신가요? 카풀메이트에서 함께 이동할 친구를 구하세요. 교통비도 절약하고, 환경도 보호하세요!</p>
+                <p>지금 바로 SU-mate와 함께 여러분의 카풀 메이트를 찾아보세요!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main_page.js"></script>
+   
+
+		<div class="footer">
+            <div class="divider"></div>
+            <div class="footer-text">
+                <div class="footer-item1">Copyright © 2024 SU-mate.corp</div>
+                <div class="footer-item1">Contact Us: info@campusconnect.com</div>
+            </div>
+        </div>
+
+    <script>
+        // JavaScript 코드: 'SU-mate' 제목 클릭 시 index.jsp로 이동
+        document.getElementById('title').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</body>
+</html>

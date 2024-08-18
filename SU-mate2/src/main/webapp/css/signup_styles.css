@@ -1,0 +1,64 @@
+.signup-section {
+    width: 100%;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.signup-text {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    gap: 20px; /* 각 줄 사이에 여백 추가 */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.signup-form label {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.signup-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.signup-button {
+    padding: 12px;
+    background-color: black; /* 버튼 색상을 검은색으로 변경 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+    background-color: #333; /* 호버 시 약간 밝은 검은색 */
+}

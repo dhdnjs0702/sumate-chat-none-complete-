@@ -1,0 +1,647 @@
+body {
+    margin: 0;
+    font-family: Roboto, sans-serif;
+}
+
+.main-container {
+    width: 100%;
+    padding-top: 80px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    width: 100%;
+    height: 80px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.10);
+    border-radius: 100px;
+}
+
+.title {
+    flex: 1;
+    color: black;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 36px;
+    word-wrap: break-word;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu-item {
+    text-decoration: none; /* 밑줄 제거 */
+    color: black; /* 글자 색상 */
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word;
+    cursor: pointer; /* 커서를 포인터로 변경 */
+}
+
+
+.menu-item:hover {
+    color: #007bff; /* 호버 시 색상 변경 */
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-button {
+    height: 36px;
+    padding: 0 16px;
+    background-color: #101011; /* 버튼 배경색 */
+    color: white; /* 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+    border-radius: 6px; /* 둥근 모서리 */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    transition: background-color 0.3s; /* 배경색 전환 애니메이션 */
+}
+
+.search-button:hover {
+    background-color: #0056b3; /* 호버 시 버튼 배경색 */
+}
+
+
+.search-bar {
+    height: 36px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px rgba(0, 0, 0, 0.10) solid;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.search-text {
+    flex: 1;
+    color: rgba(0, 0, 0, 0.50);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    word-wrap: break-word;
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.70);
+}
+
+.intro-section {
+    width: 100%;
+    padding: 60px 20px;
+    background: rgba(0, 0, 0, 0.60);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* 경계선과 텍스트 사이의 간격 */
+}
+
+.intro-text {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.welcome {
+    color: white;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    word-wrap: break-word;
+}
+
+.search-box {
+    height: 36px;
+    padding: 8px;
+    background: white;
+    border-radius: 6px;
+    border: 1px rgba(0, 0, 0, 0.10) solid;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.description {
+    color: white;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.search-placeholder {
+    flex: 1;
+    height: 20px;
+    color: rgba(0, 0, 0, 0.50);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    word-wrap: break-word;
+}
+
+.get-started-button {
+    height: 48px;
+    padding: 12px;
+    background: black; /* 배경색을 검은색으로 설정 */
+    color: white; /* 텍스트 색상을 흰색으로 설정 */
+    border: none; /* 테두리 제거 */
+    border-radius: 8px; /* 둥근 모서리 */
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+.get-started {
+    height: 48px;
+    padding: 12px;
+    background: black;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.get-started-text {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.featured-roommates {
+    width: 100%;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+}
+
+.roommate-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.featured-title {
+    color: black;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    word-wrap: break-word;
+}
+
+.featured-description {
+    color: black;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.view-all {
+    height: 48px;
+    padding: 12px;
+    background: black;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.view-all-text {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.roommate-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* 아이템 간격을 균일하게 조정 */
+    align-items: flex-start;
+    gap: 20px;
+    padding: 0 20px; /* 좌우 여백 추가 */
+}
+
+.roommate-item {
+    flex: 1 1 calc(50% - 20px); /* 한 줄에 두 개 아이템이 들어가도록 설정 */
+    max-width: calc(50% - 20px); /* 최대 너비를 한 줄에 두 개가 들어갈 수 있도록 설정 */
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px rgba(0, 0, 0, 0.10) solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.roommate-image {
+    width: 100%;
+    height: 340px;
+    background: rgba(216, 216, 216, 0.50);
+    position: relative;
+}
+
+.roommate-details {
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.roommate-name {
+    width: 100%;
+    color: black;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.roommate-bio {
+    width: 100%;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    word-wrap: break-word;
+}
+
+.footer {
+    width: 100%;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 배치 */
+    align-items: center;
+    gap: 10px; /* 아이템들 사이의 간격 */
+}
+
+.footer-item {
+    width: 50%;
+    text-align: left;
+    color: black;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+    word-wrap: break-word;
+}
+
+.feature-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.feature-image {
+    flex: 1;
+    max-width: 50%;
+}
+
+.responsive-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px; /* 이미지의 모서리를 둥글게 */
+}
+
+.feature-description {
+    flex: 1;
+    max-width: 50%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.feature-description h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.feature-description p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/*signup.html*/
+.signup-section {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 40px; /* header와의 간격 추가 */
+    margin-bottom: 40px; /* footer와의 간격 추가 */
+}
+
+.signup-text {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 각 항목 사이의 간격 추가 */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.signup-form label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.signup-form .icon {
+    margin-right: 8px;
+}
+
+.signup-form input,
+.signup-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.gender-options {
+    display: flex;
+    gap: 20px;
+}
+
+.gender-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gender-options input[type="radio"] {
+    width: 16px; /* 라디오 버튼 크기 조정 */
+    height: 16px; /* 라디오 버튼 크기 조정 */
+}
+
+.signup-button {
+    padding: 12px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.signup-button:hover {
+    background-color: #555;
+}
+
+@media (max-width: 1200px) {
+    .roommate-item {
+        flex: 1 1 calc(50% - 20px);
+        max-width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+    }
+
+    .menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-item {
+        padding: 5px 0;
+    }
+
+    .roommate-item {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .intro-section,
+    .featured-roommates {
+        padding: 40px 20px;
+    }
+
+    .intro-text,
+    .roommate-header {
+        width: 100%;
+    }
+}
+
+/* 기존 CSS는 유지합니다. 아래는 새로운 스타일 추가 부분입니다. */
+
+.content-section {
+    width: calc(100%); /* 좌우로 15px씩 더 키움 */
+    max-width: 1030px; /* content-section의 최대 너비 설정 */
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: none; /* 배경 테두리 제거 */
+    background-color: transparent; /* 배경색 제거 */
+}
+
+
+
+.gender-selector {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    margin-right: 20px; /* 오른쪽 여백 추가 */
+}
+
+.gender-btn {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    background-color: #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* 색상 전환 애니메이션 */
+}
+
+.gender-btn.selected[data-gender="male"], .gender-btn[data-gender="male"]:hover {
+    background-color: #007bff; /* 기본: 남성 선택 시 파란색 */
+    color: white;
+}
+
+.gender-btn.selected[data-gender="female"], .gender-btn[data-gender="female"]:hover {
+    background-color: #ff69b4; /* 여성 선택 시 분홍색 */
+    color: white;
+}
+
+.postit-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: flex-start; /* 상단 정렬 */
+}
+
+/* 추가된 스타일 */
+.postit-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: flex-start;
+    padding: 20px;
+}
+
+
+.postit {
+    background-color: #fff2ac; /* 포스트잇 느낌의 색상 */
+    border: 1px solid #e6d45b;
+    border-radius: 4px;
+    width: 400px; /* 포스트잇 너비 210px로 설정 */
+    height: 400px; /* 포스트잇 높이 210px로 설정 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative; /* 포스트잇의 자식 요소 위치 조정 */
+    display: flex; /* 텍스트 가운데 정렬을 위해 flex 사용 */
+    flex-direction: column;
+    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 */
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px; /* 간격을 주어 정렬 보정 */
+}
+
+.postit-content {
+    position: relative;
+    z-index: 1;
+}
+
+.postit-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #fff2ac;
+    border: 1px solid #e6d45b;
+    border-top-left-radius: 4px;
+    transform: rotate(45deg);
+    transform-origin: 0 0;
+    z-index: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.feed-add-button:hover {
+    background-color: #333333; /* 호버 시 약간 밝은 검은색 */
+}
+
+.feed-add-button {
+    background-color: #000000; /* 검은색 배경 */
+    border: none; /* 테두리 없음 */
+    color: #ffffff; /* 흰색 글자 */
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 20px; /* 둥근 모서리 */
+    transition: background-color 0.3s ease;
+}
+
+#loadMoreContainer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#loadMoreButton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#loadMoreButton:hover {
+    background-color: #444;
+}
+
+/* 반응형 웹 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .postit {
+        width: calc(100% - 40px); /* 작은 화면: 한 줄에 하나의 포스트잇 */
+    }
+
+    .gender-selector {
+        justify-content: center; /* 작은 화면에서 성별 버튼 가운데 정렬 */
+    }
+
+    .gender-btn {
+        margin: 0 5px;
+    }
+}
