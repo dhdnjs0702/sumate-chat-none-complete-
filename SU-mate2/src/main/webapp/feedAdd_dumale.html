@@ -23,7 +23,7 @@
 $(document).ready(function() {
     // 사용자 닉네임 가져오기
     $.ajax({
-        url: 'jsp/getUserNickname.jsp',  // 서버에서 닉네임을 가져오는 JSP 파일
+        url: 'getUserNickname.jsp',  // 서버에서 닉네임을 가져오는 JSP 파일
         method: 'GET',
         success: function(response) {
             $('#userNickname').text(response);
@@ -47,7 +47,7 @@ $(document).ready(function() {
         formData.append("jsonstr", JSON.stringify(jsonData));
         
         $.ajax({
-            url: 'jsp/feedAdd_dumale.jsp',
+            url: 'feedAdd_dumale.jsp',
             type: 'POST',
             data: formData,
             processData: false,
@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 	    // AJAX를 사용하여 서버로 데이터 전송
 	    $.ajax({
-	        url: 'jsp/feedAdd_dumale.jsp',
+	        url: 'feedAdd_dumale.jsp',
 	        type: 'POST',
 	        data: formData,
 	        processData: false,

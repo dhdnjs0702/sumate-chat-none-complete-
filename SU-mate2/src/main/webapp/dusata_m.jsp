@@ -117,15 +117,36 @@ function show(feeds) {
     for (var i = 0; i < feeds.length; i++) {
         var img = feeds[i].images, imgstr = "";
         if (img && img.trim() !== "") {
-            imgstr = "<img src='" + img + "' width='100%' onerror='this.style.display=\"none\"'>";
+            imgstr = "<img src='/SU-mate2/images/" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
         }
+
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
         var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
         
-        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>"; // onclick 이벤트 수정
-        str += "<div><small>" + nickname + "</small>&nbsp;<small>(" + feeds[i].ts + ")</small></div>";
-        str += "<div>" + imgstr + "</div>";
-        str += "<div class='postit-content'>" + feeds[i].content + "</div>";
+        // 글자 수 제한 (최대 25자 * 4줄)
+        var content = feeds[i].content;
+        var maxCharsPerLine = 25;
+        var maxLines = 4;
+        var formattedContent = '';
+
+        for (var j = 0; j < maxLines; j++) {
+            if (content.length > maxCharsPerLine) {
+                formattedContent += content.substring(0, maxCharsPerLine) + '<br>';
+                content = content.substring(maxCharsPerLine);
+            } else {
+                formattedContent += content;
+                break;
+            }
+        }
+        
+        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>";
+        str += "<div class='postit-header'>";
+        str += "<small class='postit-nickname'>" + nickname + "</small>";
+        str += "<small class='postit-timestamp'>" + feeds[i].ts + "</small>";
+        str += "</div>";
+        str += "<div class='postit-body'>" + imgstr;
+        str += "<div class='postit-content'>" + formattedContent + "</div>";
+        str += "</div>";
         str += "</div>";
     }
     str += "</div>";

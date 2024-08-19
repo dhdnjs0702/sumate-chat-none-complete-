@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="dao.UserDAO" %>
 <!DOCTYPE html>
 <html>
 		<%
@@ -22,6 +23,7 @@
 
     // 로그인 상태인 경우 세션에 사용자 ID를 다시 설정 (필요에 따라)
     session.setAttribute("id", userID);
+   
 %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -82,19 +84,25 @@
 		});
 	}
 	function addBox(lastID, toID, chatContent, chatTime){
-		 console.log("Adding box for toID:", toID);
-	    $('#boxTable').append('<tr onclick="location.href=\'chat.jsp?toID='+ encodeURIComponent(toID) + '\'">' +
-	        '<td style="width: 150px;"><h5>' + lastID + '</h5></td>' +
-	        '<td>' +
-	        '<h5>' + chatContent + '</h5>' +
-	        '<div class="pull-right">' + chatTime + '</div>' +
-	        '</td>' + 
-	        '</tr>');
-	}
-	function getInfiniteBox(){
-		setInterval(function(){
-			chatBoxFunction();
-		}, 3000);
+	    $.ajax({
+	        type: "GET",
+	        url: "getChatNickname.jsp",  // 닉네임을 가져오는 JSP
+	        data: { toID: toID },
+	        success: function(response){
+	            var nickname = JSON.parse(response).nickname;
+	            console.log("Adding box for toID:", toID);
+	            $('#boxTable').append('<tr onclick="location.href=\'chat.jsp?toID='+ encodeURIComponent(toID) + '\'">' +
+	                '<td style="width: 150px;"><h5>' + nickname + '</h5></td>' +  // 닉네임 표시
+	                '<td>' +
+	                '<h5>' + chatContent + '</h5>' +
+	                '<div class="pull-right">' + chatTime + '</div>' +
+	                '</td>' + 
+	                '</tr>');
+	        },
+	        error: function(){
+	            console.log("Error retrieving nickname for toID:", toID);
+	        }
+	    });
 	}
 </script>
 <title>추가기능 채팅 구현</title>

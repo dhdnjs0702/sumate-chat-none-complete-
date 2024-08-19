@@ -28,7 +28,8 @@ try {
         	if (item.getFieldName().equals("image") && !item.getName().isEmpty()) {
         	    ufname = item.getName();
         	    ufile = item.get();
-        	    String root = application.getRealPath("/images");
+        	    String root = "/Users/mzsoba/eclipse-workspace/SU-mate2/src/main/webapp/images";
+
                 System.out.println("Image save path: " + root); // 로그에 경로 출력
                 File saveDir = new File(root);
                 if (!saveDir.exists()) {

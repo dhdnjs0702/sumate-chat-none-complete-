@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %> 
-<%@ page import="dao.FeedDAO_dufemale" %>
+<%@ page import="dao.FeedDAO_dumale" %>
 <%@ page import="dao.FeedObj" %>
 <%@ page import="org.json.simple.*" %>
 <%@ page import="org.json.simple.parser.*" %>
@@ -95,19 +95,58 @@ function loadMoreFeeds() {
     });
 }
 
+function redirectToChat(toID, nickname) {
+    var userID = '<%= uid %>'; // 현재 로그인한 사용자의 ID를 JSP에서 가져옴
+
+    if (toID && toID.trim() !== "") {
+        if (userID === toID) {
+            alert("자기자신과는 채팅할 수 없습니다.");
+        } else {
+            var confirmMessage = nickname + "님과 채팅하시겠습니까?";
+            if (confirm(confirmMessage)) { // 확인 창에서 "예"를 누르면 채팅방으로 이동
+                window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
+            }
+        }
+    } else {
+        alert("잘못된 유저 정보입니다.");
+    }
+}
+
 function show(feeds) {
     var str = "<div class='postit-container'>";
     for (var i = 0; i < feeds.length; i++) {
         var img = feeds[i].images, imgstr = "";
         if (img && img.trim() !== "") {
-            imgstr = "<img src='" + img + "' width='100%' onerror='this.style.display=\"none\"'>";
+            imgstr = "<img src='/SU-mate2/images/" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
         }
-        var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";        
-     
-        str += "<div class='postit'>";
-        str += "<div><small>" + nickname + "</small>&nbsp;<small>(" + feeds[i].ts + ")</small></div>";
-        str += "<div>" + imgstr + "</div>";
-        str += "<div class='postit-content'>" + feeds[i].content + "</div>";
+
+        var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
+        var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
+        
+        // 글자 수 제한 (최대 25자 * 4줄)
+        var content = feeds[i].content;
+        var maxCharsPerLine = 25;
+        var maxLines = 4;
+        var formattedContent = '';
+
+        for (var j = 0; j < maxLines; j++) {
+            if (content.length > maxCharsPerLine) {
+                formattedContent += content.substring(0, maxCharsPerLine) + '<br>';
+                content = content.substring(maxCharsPerLine);
+            } else {
+                formattedContent += content;
+                break;
+            }
+        }
+        
+        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>";
+        str += "<div class='postit-header'>";
+        str += "<small class='postit-nickname'>" + nickname + "</small>";
+        str += "<small class='postit-timestamp'>" + feeds[i].ts + "</small>";
+        str += "</div>";
+        str += "<div class='postit-body'>" + imgstr;
+        str += "<div class='postit-content'>" + formattedContent + "</div>";
+        str += "</div>";
         str += "</div>";
     }
     str += "</div>";

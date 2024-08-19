@@ -559,22 +559,29 @@ body {
     background-color: #fff2ac; /* 포스트잇 느낌의 색상 */
     border: 1px solid #e6d45b;
     border-radius: 4px;
-    width: 400px; /* 포스트잇 너비 210px로 설정 */
-    height: 400px; /* 포스트잇 높이 210px로 설정 */
+    width: 400px; /* 포스트잇 너비 고정 */
+    height: 400px; /* 포스트잇 높이 고정 */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative; /* 포스트잇의 자식 요소 위치 조정 */
-    display: flex; /* 텍스트 가운데 정렬을 위해 flex 사용 */
+    display: flex;
     flex-direction: column;
-    align-items: center; /* 세로 가운데 정렬 */
-    justify-content: center; /* 가로 가운데 정렬 */
-    text-align: center;
-    font-weight: bold;
+    justify-content: space-between;
+    padding: 10px;
+    overflow: hidden; /* 포스트잇 크기를 넘지 않도록 텍스트 잘림 처리 */
     margin-bottom: 20px; /* 간격을 주어 정렬 보정 */
 }
 
 .postit-content {
-    position: relative;
-    z-index: 1;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    overflow: hidden; /* 텍스트가 넘칠 경우 잘림 처리 */
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* 최대 4줄로 제한 */
+    -webkit-box-orient: vertical;
+    line-height: 1.2em; /* 줄 간격 조정 */
+    height: calc(1.2em * 4); /* 4줄의 높이에 맞게 고정 */
+    word-wrap: break-word; /* 긴 단어를 줄바꿈 처리 */
 }
 
 .postit-corner {
@@ -590,6 +597,39 @@ body {
     transform-origin: 0 0;
     z-index: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.postit-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.postit-nickname {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.postit-timestamp {
+    font-size: 12px;
+    text-align: right;
+}
+
+.postit-image {
+    width: 270px; /* 너비를 270px로 고정 */
+    height: 270px; /* 높이를 270px로 고정 */
+    object-fit: contain; /* 이미지의 전체를 보여주며, 비율을 유지 */
+    display: block; /* 이미지를 블록 요소로 표시 */
+    margin: 0 auto; /* 이미지를 수평 중앙에 정렬 */
+}
+
+.postit-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* 이미지와 텍스트를 중간에 위치시킴 */
 }
 
 .feed-add-button:hover {
