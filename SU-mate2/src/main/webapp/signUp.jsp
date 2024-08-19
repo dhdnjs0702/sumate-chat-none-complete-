@@ -203,5 +203,11 @@ function getToday() {
     return year + "-" + month + "-" + day;
 }
 </script>
+<script>
+        // JavaScript 코드: 'SU-mate' 제목 클릭 시 index.jsp로 이동
+        document.getElementById('title').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    </script>
 </body>
 </html>

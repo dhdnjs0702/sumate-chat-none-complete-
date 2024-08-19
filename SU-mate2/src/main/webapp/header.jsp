@@ -14,8 +14,9 @@
             <div class="menu">
                 <a href="roomMate.jsp" class="menu-item">기숙사 룸메이트</a>
                 <a href="dusata_m.jsp" class="menu-item">두유는 사랑을 타고</a>
-                <a href="mealCompanion.jsp" class="menu-item">밥친구</a>
                 <a href="carPool.jsp" class="menu-item">카풀</a>
+                <a href="myPage.jsp" class="menu-item">마이페이지</a>
+                <a href="box.jsp" class="menu-item">메시지<span id="unread" class="label label-info"></span></a>
                 <div class="search-bar">
                     <form action="login.jsp" class="search-form">
                         <button type="submit" class="search-button">로그인 / 회원가입</button>

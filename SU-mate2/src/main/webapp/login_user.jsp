@@ -17,13 +17,14 @@
         code = dao.login(uid, upass);
     } catch (Exception e) {
         e.printStackTrace();
-        out.print("ER: " + e.getMessage());
+        out.print("<script>alert('ER: " + e.getMessage() + "'); history.back();</script>");
+        return;
     }
 
     if (code == 1) {
-        out.print("NE"); // 아이디가 존재하지 않습니다.
+        out.print("<script>alert('아이디가 존재하지 않습니다.'); history.back();</script>");
     } else if (code == 2) {
-        out.print("PE"); // 패스워드가 일치하지 않습니다.
+        out.print("<script>alert('패스워드가 일치하지 않습니다.'); history.back();</script>");
     } else if (code == 0) {
         session.setAttribute("id", uid);
 
@@ -35,12 +36,8 @@
             e.printStackTrace();
         }
 
-        out.print("OK"); // 로그인 성공
-        response.sendRedirect("mainPage.jsp");
+        out.print("<script>alert('로그인 성공!'); location.href='mainPage.jsp';</script>");
     } else {
-        out.print("ER: Login failed"); // 기타 오류
+        out.print("<script>alert('로그인에 실패했습니다.'); history.back();</script>");
     }
 %>
-
-
-

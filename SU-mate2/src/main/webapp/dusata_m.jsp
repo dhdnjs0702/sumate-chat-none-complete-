@@ -95,6 +95,23 @@ function loadMoreFeeds() {
     });
 }
 
+function redirectToChat(toID, nickname) {
+    var userID = '<%= uid %>'; // 현재 로그인한 사용자의 ID를 JSP에서 가져옴
+
+    if (toID && toID.trim() !== "") {
+        if (userID === toID) {
+            alert("자기자신과는 채팅할 수 없습니다.");
+        } else {
+            var confirmMessage = nickname + "님과 채팅하시겠습니까?";
+            if (confirm(confirmMessage)) { // 확인 창에서 "예"를 누르면 채팅방으로 이동
+                window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
+            }
+        }
+    } else {
+        alert("잘못된 유저 정보입니다.");
+    }
+}
+
 function show(feeds) {
     var str = "<div class='postit-container'>";
     for (var i = 0; i < feeds.length; i++) {
@@ -105,7 +122,7 @@ function show(feeds) {
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
         var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
         
-        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\")'>"; // onclick 이벤트 추가
+        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>"; // onclick 이벤트 수정
         str += "<div><small>" + nickname + "</small>&nbsp;<small>(" + feeds[i].ts + ")</small></div>";
         str += "<div>" + imgstr + "</div>";
         str += "<div class='postit-content'>" + feeds[i].content + "</div>";
@@ -113,15 +130,6 @@ function show(feeds) {
     }
     str += "</div>";
     $("#feedContainer").append(str);  // append를 사용하여 기존 내용에 추가
-}
-
-// 채팅방으로 이동하는 함수
-function redirectToChat(toID) {
-    if (toID && toID.trim() !== "") {
-        window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
-    } else {
-        alert("잘못된 유저 정보입니다.");
-    }
 }
 
 function addFeed() {

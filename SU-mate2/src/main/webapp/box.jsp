@@ -7,18 +7,28 @@
 			if(session.getAttribute("id") !=null){
 				userID = (String) session.getAttribute("id");
 			}
-			if(userID == null){
-				session.setAttribute("messageType", "오류 메시지");
-				session.setAttribute("messageContent", "현재 로그인이 되어 있지 않습니다.");
-				response.sendRedirect("mainPage.jsp");
-				return;
-			}
 		%>
+<%
+    // 로그인 상태 확인
+    if (userID == null) {
+%>
+        <script type="text/javascript">
+            alert("로그인 후 이용가능한 컨텐츠입니다.");
+            window.location.href = "login.jsp"; // 로그인 페이지로 리다이렉트
+        </script>
+<%
+        return; // JSP 페이지 실행 종료
+    }
+
+    // 로그인 상태인 경우 세션에 사용자 ID를 다시 설정 (필요에 따라)
+    session.setAttribute("id", userID);
+%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/custom.css">
+<link rel="stylesheet" href="css/main_styles.css">
 <script src="js/jquery-3.7.1.min.js"></script>
 <script src="js/bootstrap.js"></script>
 <script type="text/javascript">
@@ -90,57 +100,7 @@
 <title>추가기능 채팅 구현</title>
 </head>
 <body>
-		<nav class= "navbar navbar-default">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-					aria-expanded="false">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="index.jsp">실시간 채팅 기능 구현</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li ><a href="index.jsp">메인</a></li>
-					<li><a href="find.jsp">친구찾기</a></li>
-					<li class="active"><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
-				</ul>
-				<%
-					if(userID ==null){
-				%>
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle"
-								data-toggle="dropdown" role="button" aria-haspopup="true"
-								aria-expanded="false">접속하기<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a href="login.jsp">로그인</a></li>
-								<li><a href="join.jsp">회원가입</a></li>
-							</ul>
-						</li>
-					</ul>
-					<%
-						} else{
-					%>
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle"
-								data-toggle="dropdown" role="button" aria-haspopup="true"
-								aria-expanded="false">접속하기<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a href="logoutAction.jsp">로그아웃</a></li>
-							</ul>
-						</li>
-					</ul>
-					<%
-						}
-					%>
-			</div>
-		</nav>
+		<%@ include file="header_login.jsp" %> 
 		<div class="container">
 			<table class="table" style="margin: 0 auto;">
 				<thead>
@@ -212,5 +172,17 @@
 		 </script>
 		<%
 			}
-		%></body>
+		%>
+ <script src="js/main_page.js"></script>
+   
+
+<%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
+
+    <script>
+        // JavaScript 코드: 'SU-mate' 제목 클릭 시 mainPage.jsp로 이동
+        document.getElementById('title').addEventListener('click', () => {
+            window.location.href = 'mainPage.jsp';
+        });
+    </script>
+</body>
 </html>

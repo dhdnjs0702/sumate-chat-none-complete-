@@ -16,7 +16,7 @@
                 <a href="dusata_m.jsp" class="menu-item">두유는 사랑을 타고</a>
                 <a href="carPool.jsp" class="menu-item">카풀</a>
                 <a href="myPage.jsp" class="menu-item">마이페이지</a>
-                <a href="box.jsp" class="menu-item">메시지</a>
+                <a href="box.jsp" class="menu-item">메시지<span id="unread" class="label label-info"></span></a>
                 <div class="search-bar">
                     <form action="logout.jsp" class="search-form">
                         <button type="submit" class="search-button">로그아웃</button>

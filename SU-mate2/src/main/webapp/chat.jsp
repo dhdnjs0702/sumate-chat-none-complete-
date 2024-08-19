@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLDecoder" %>
+<%@ page import="dao.UserDAO" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,37 +12,36 @@
 				System.out.println("userID1="+userID);
 				
 			}
-			String toID = null;
-            if (request.getParameter("toID") != null) {
-                toID = request.getParameter("toID");
-                toID = URLDecoder.decode(toID, "UTF-8");
-				System.out.println("toID2="+toID);
-
-            }
+			 String toID = null;
+			    String toNickname = "Unknown";
+			    if (request.getParameter("toID") != null) {
+			        toID = request.getParameter("toID");
+			        toID = URLDecoder.decode(toID, "UTF-8");
+			        
+			        // 상대방의 닉네임 가져오기
+			        UserDAO userDAO = new UserDAO();
+			        toNickname = userDAO.getNickname(toID);
+			        if (toNickname == null) {
+			            toNickname = toID; // 닉네임이 없으면 ID를 대신 사용
+			        }
+			    }
           
-			if(userID == null){
-				session.setAttribute("messageType", "오류 메시지");
-				session.setAttribute("messageContent", "현재 로그인이 되어 있지 않습니다.");
-				response.sendRedirect("login.jsp");				
-				System.out.println("userID3="+userID);
-
-				return;
-			}
-			if(toID == null){
-				session.setAttribute("messageType", "오류 메시지");
-				session.setAttribute("messageContent", "대화 상태가 지정되지 않았습니다.");
-				response.sendRedirect("mainPage.jsp");
-				System.out.println("toID4="+toID);
-				return;
-			}
-			
-			if (userID.equals(toID)) {
-                session.setAttribute("messageType", "오류 메시지");
-                session.setAttribute("messageContent", "자기 자신에게 쪽지를 보낼 수 없습니다.");
-                response.sendRedirect("mainPage.jsp");
-                return;
-            }
 		%>
+<%
+    // 로그인 상태 확인
+    if (userID == null) {
+%>
+        <script type="text/javascript">
+            alert("로그인 후 이용가능한 컨텐츠입니다.");
+            window.location.href = "login.jsp"; // 로그인 페이지로 리다이렉트
+        </script>
+<%
+        return; // JSP 페이지 실행 종료
+    }
+
+    // 로그인 상태인 경우 세션에 사용자 ID를 다시 설정 (필요에 따라)
+    session.setAttribute("id", userID);
+%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/bootstrap.css">
@@ -50,11 +50,7 @@
 <script src="js/bootstrap.js"></script>
 <title>추가기능 채팅 구현</title>
 <script type="text/javascript">
-	function autoClosingAlert(selector, delay){
-		var alert = $(selector).alert();
-		alert.show();
-		window.setTimeout(function() {alert.hide()}, delay);
-	}
+
 	function submitFunction(){
 		var fromID = '<%= userID %>';
 		console.log("fromID="+fromID);
@@ -87,6 +83,8 @@
 	function chatListFunction(type) {
 	    var fromID = '<%= userID %>';
 	    var toID = '<%= toID %>';
+	    var toNickname = '<%= toNickname %>';
+
 	    $.ajax({
 	        type: "POST",
 	        url: "./chatListServlet",
@@ -112,6 +110,8 @@
 	                // 메시지 발신자가 현재 사용자인 경우 '나'로 표시
 	                if (chatName === fromID) {
 	                    chatName = '나';
+	                } else if (chatName === toID) {
+	                    chatName = toNickname; // 상대방의 닉네임을 사용
 	                }
 
 	                addChat(chatName, chatContent, chatTime);
@@ -186,22 +186,14 @@
 </head>
 <body>
 		<nav class= "navbar navbar-default">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-					aria-expanded="false">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="index.jsp">실시간 채팅 기능 구현</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li><a href="index.jsp">메인</a></li>
-					<li><a href="find.jsp">친구찾기</a></li>
-					<li><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
-				</ul>
+			<div class="navbar-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+   				 <a href="box.jsp" style="padding-left: 10px; font-size: 24px; font-weight: bold; color: white;">
+			        &larr; <!-- 화살표를 나타내는 HTML 엔티티 -->
+			    </a>
+			    <a class="navbar-brand" href="mainPage.jsp" style="flex-grow: 1; text-align: center;">
+			        <%= toNickname %>님과의 쪽지
+			    </a>
+			    <div style="width: 20px;"></div> <!-- 오른쪽에 빈 공간을 만들어 균형을 맞춤 -->
 			</div>
 		</nav>
 		<div class="container bootstrap snippet">
@@ -210,7 +202,7 @@
 					<div class="portlet portlet-default">
 						<div class="portlet-heading">
 							<div class="portlet- title">
-								<h4><i class="fa fa-circle text-green">실시간 채팅</i></h4>
+								<h4><i class="">실시간 채팅</i></h4>
 							</div>
 							<div class="clearfix"></div>
 						</div>
@@ -233,7 +225,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="alert alert-success" id="successMessage" style="display: none;">
+		
+		<!--  div class="alert alert-success" id="successMessage" style="display: none;">
 			<strong>메시지 전송에 성공했습니다.</strong>
 		</div>
 		<div class="alert alert-danger" id="dangerMessage" style="display: none;">
@@ -241,49 +234,8 @@
 		</div>
 		<div class="alert alert-warning" id="warningMessage" style="display: none;">
 			<strong>데이터 베이스 오류가 발생했습니다.</strong>
-		</div>
-		<%
-			String messageContent = null;
-			if(session.getAttribute("messageContent") != null){
-				messageContent = (String) session.getAttribute("messageContent");
-			}
-			String messageType = null;
-			if(session.getAttribute("messageType") != null){
-				messageType = (String) session.getAttribute("messageType");
-			}
-			if (messageContent != null){
-		%>
-		<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-				<div class="modal-dialog vertical-align-center">
-					<div class="modal-content <% if(messageType.equals("오류 메시지")) out.println("panel-warning"); else out.println("panel-success"); %>">
-						<div class="modal-header panel-heading">
-							<button type="button" class="close" data-dismiss="modal">
-								<span aria-hidden="true">&times</span>
-								<span class="sr-only">Close</span>
-							</button>
-							<h4 class="modal-title">
-								<%= messageType %>
-							</h4>
-						</div>
-						<div class="modal-body">
-							<%= messageContent %>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<script>
-			$('#messageModal').modal("show");
-		</script>
-		<%
-			session.removeAttribute("messageContent");
-			session.removeAttribute("messageType");
-			}
-		%>
+		</div -->
+
 		<script type="text/javascript">
 		$(document).ready(function(){
 			var toID = '<%= toID %>';

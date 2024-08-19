@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form id="feedForm" action="jsp/feedAdd_dufemale.jsp" method="post" enctype="multipart/form-data">
+	<form id="feedForm" action="feedAdd_dufemale.jsp" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="jsonstr" id="jsonstr">   
     <label for="nickname">닉네임:</label>
             <span id="userNickname"></span>
@@ -23,7 +23,7 @@
 $(document).ready(function() {
     // 사용자 닉네임 가져오기
     $.ajax({
-        url: 'jsp/getUserNickname.jsp',  // 서버에서 닉네임을 가져오는 JSP 파일
+        url: 'getUserNickname.jsp',  // 서버에서 닉네임을 가져오는 JSP 파일
         method: 'GET',
         success: function(response) {
             $('#userNickname').text(response);
@@ -47,7 +47,7 @@ $(document).ready(function() {
         formData.append("jsonstr", JSON.stringify(jsonData));
         
         $.ajax({
-            url: 'jsp/feedAdd_dufemale.jsp',
+            url: 'feedAdd_dufemale.jsp',
             type: 'POST',
             data: formData,
             processData: false,
@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 	    // AJAX를 사용하여 서버로 데이터 전송
 	    $.ajax({
-	        url: 'jsp/feedAdd_dufemale.jsp',
+	        url: 'feedAdd_dufemale.jsp',
 	        type: 'POST',
 	        data: formData,
 	        processData: false,
