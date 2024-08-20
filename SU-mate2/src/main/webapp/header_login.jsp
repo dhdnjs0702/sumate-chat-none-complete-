@@ -10,7 +10,6 @@
         <div class="header">
             <div class="logo"></div>
             <div class="title" id="title">SU-mate</div>
-       		
             <div class="menu">
                 <a href="roomMate.jsp" class="menu-item">기숙사 룸메이트</a>
                 <a href="dusata_m.jsp" class="menu-item">두유는 사랑을 타고</a>

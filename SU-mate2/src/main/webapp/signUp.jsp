@@ -179,6 +179,8 @@ function signup() {
             var code = response.trim();
             if(code == "EX") {
                 alert("이미 가입한 회원입니다.");
+            } else if (code == "NEX"){
+            	alert("닉네임이 중복됩니다.");
             } else if(code == "ER") {
                 alert("회원가입 처리 중 에러가 발생하였습니다.");
             } else if(code == "OK") {

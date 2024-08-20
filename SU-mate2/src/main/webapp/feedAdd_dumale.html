@@ -11,9 +11,14 @@
             <span id="userNickname"></span>
             <br>
     <label for="content">작성글:</label>
-    <textarea id="content" name="content" required></textarea><br>
+	<textarea id="content" name="content" maxlength="100" placeholder="최대 100자까지 입력가능합니다."required></textarea><br>
+	<span id="charCount">0/100</span>
+	<br>
+	<br>
     <label for="image">이미지:</label>
-    <input type="file" id="image" name="image"><br>
+	<input type="file" id="image" name="image" accept="image/*"><br>
+	<br>
+	<br>
     <button type="submit">글 작성</button>
     </form>
 </body>
@@ -106,5 +111,17 @@ $(document).ready(function() {
 	        }
 	    });
 	}
+	
+	$('#content').on('input', function() {
+	    var contentLength = $(this).val().length;
+	    $('#charCount').text(contentLength + '/100');
+	});
+	
+	$('#image').on('change', function() {
+	    if (this.files.length > 1) {
+	        alert('사진은 최대 한 장만 업로드할 수 있습니다.');
+	        this.value = '';  // 선택한 파일을 초기화합니다.
+	    }
+	});
 </script>
 </html>

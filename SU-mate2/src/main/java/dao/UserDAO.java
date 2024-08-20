@@ -26,6 +26,7 @@ public class UserDAO {
 	            if (conn != null) conn.close();
 	        }
 	    }
+	 
 public boolean exists(String uid) throws NamingException, SQLException {
 	Connection conn = ConnectionPool.get();
 	PreparedStatement stmt = null;
@@ -44,6 +45,45 @@ public boolean exists(String uid) throws NamingException, SQLException {
 		if (conn != null) conn.close();
 	}
 }
+
+public boolean nicknameExists(String nickname) throws NamingException, SQLException {
+    Connection conn = ConnectionPool.get();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    JSONParser parser = new JSONParser(); // JSON 파서를 생성합니다.
+    
+    try {
+        // 모든 유저의 JSON 문자열을 가져와서 닉네임을 확인하는 쿼리
+        String sql = "SELECT jsonstr FROM user";
+        stmt = conn.prepareStatement(sql);
+        rs = stmt.executeQuery();
+
+        // 각 JSON 문자열을 파싱하여 닉네임을 비교
+        while (rs.next()) {
+            String jsonstr = rs.getString("jsonstr");
+            
+            try {
+                // JSON 문자열을 파싱하여 JSONObject 생성
+                JSONObject json = (JSONObject) parser.parse(jsonstr);
+                String existingNickname = (String) json.get("nickname"); // 닉네임을 추출
+                
+                if (nickname.equals(existingNickname)) {
+                    return true; // 닉네임이 이미 존재하면 true 반환
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false; // 닉네임이 중복되지 않으면 false 반환
+
+    } finally {
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (conn != null) conn.close();
+    }
+}
+
 
 public boolean delete(String uid) throws NamingException, SQLException {
     Connection conn = ConnectionPool.get();

@@ -212,62 +212,70 @@ DataSource dataSource;
 		return -1;
 	}
 	
-	public ArrayList<ChatDTO> getBox(String userID){
-		ArrayList<ChatDTO> chatList = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String SQL = "SELECT * FROM CHAT WHERE chatID IN (SELECT MAX(chatID) FROM CHAT WHERE toID = ? OR fromID = ? GROUP BY fromID, toID)";
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, userID);
-			pstmt.setString(2, userID);
-			rs = pstmt.executeQuery();
-			chatList = new ArrayList<ChatDTO>();
-			while (rs.next()) {
-				ChatDTO chat = new ChatDTO();
-				chat.setChatID(rs.getInt("chatID"));
-				chat.setFromID(rs.getString("fromID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
-				chat.setToID(rs.getString("toID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
-				chat.setChatContent(rs.getString("chatContent").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
-				int chatTime = Integer.parseInt(rs.getString("chatTime").substring(11,13));
-				String timeType = "오전";
-				if (chatTime > 12) {
-					timeType = "오후";
-					chatTime -= 12; 
-				}
-				chat.setChatTime(rs.getString("chatTime").substring(0,11) + "" + timeType + "" + chatTime + ":" + rs.getString("chatTime").substring(14, 16)+"");
-				chatList.add(chat);
-			}
-			for(int i = 0; i < chatList.size(); i++) {
-				ChatDTO x =chatList.get(i);
-				for(int j=0; j < chatList.size(); j++) {
-					ChatDTO y = chatList.get(j);
-					if( x.getFromID().equals(y.getToID()) && x.getToID().equals(y.getFromID())) {
-						if(x.getChatID() < y.getChatID()) {
-							chatList.remove(x);
-							i--;
-							break;
-						} else {
-							chatList.remove(y);
-							j--;
-						}
-					}
-				}
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				if(rs != null) rs.close();
-				if(conn != null) conn.close();
-				if(pstmt != null) pstmt.close();
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return chatList;
+	public ArrayList<ChatDTO> getBox(String userID) {
+	    ArrayList<ChatDTO> chatList = new ArrayList<ChatDTO>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    // SQL 쿼리 수정: 사용자에 따라 삭제된 채팅방을 필터링
+	    String SQL = "SELECT * FROM CHAT WHERE (toID = ? AND isDeletedByToID = 0) "
+	               + "OR (fromID = ? AND isDeletedByFromID = 0) "
+	               + "ORDER BY chatTime DESC";
+	    
+	    try {
+	        conn = dataSource.getConnection();
+	        pstmt = conn.prepareStatement(SQL);
+	        pstmt.setString(1, userID);
+	        pstmt.setString(2, userID);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            ChatDTO chat = new ChatDTO();
+	            chat.setChatID(rs.getInt("chatID"));
+	            chat.setFromID(rs.getString("fromID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+	            chat.setToID(rs.getString("toID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+	            chat.setChatContent(rs.getString("chatContent").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+	            int chatTime = Integer.parseInt(rs.getString("chatTime").substring(11,13));
+	            String timeType = "오전";
+	            if (chatTime > 12) {
+	                timeType = "오후";
+	                chatTime -= 12;
+	            }
+	            chat.setChatTime(rs.getString("chatTime").substring(0,11) + " " + timeType + " " + chatTime + ":" + rs.getString("chatTime").substring(14, 16));
+	            chatList.add(chat);
+	        }
+
+	        // 중복된 대화 제거 로직
+	        for (int i = 0; i < chatList.size(); i++) {
+	            ChatDTO x = chatList.get(i);
+	            for (int j = 0; j < chatList.size(); j++) {
+	                ChatDTO y = chatList.get(j);
+	                if (x.getFromID().equals(y.getToID()) && x.getToID().equals(y.getFromID())) {
+	                    if (x.getChatID() < y.getChatID()) {
+	                        chatList.remove(x);
+	                        i--;
+	                        break;
+	                    } else {
+	                        chatList.remove(y);
+	                        j--;
+	                    }
+	                }
+	            }
+	        }
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (conn != null) conn.close();
+	            if (pstmt != null) pstmt.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return chatList;
 	}
 	
 	public int getUnreadChat(String fromID ,String toID ) {
@@ -298,5 +306,57 @@ DataSource dataSource;
 			}
 		}
 		return -1;
+	}
+	
+	public boolean deleteChat(String userID, String otherID) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    String SQL;
+	    try {
+	        conn = dataSource.getConnection();
+
+	        // userID가 fromID인지 toID인지 확인하여 적절한 플래그 업데이트
+	        boolean isFrom = isFromUser(conn, userID, otherID);
+
+	        if (isFrom) {
+	            SQL = "UPDATE CHAT SET isDeletedByFromID = TRUE WHERE fromID = ? AND toID = ?";
+	            pstmt = conn.prepareStatement(SQL);
+	            pstmt.setString(1, userID); // fromID로서 userID 설정
+	            pstmt.setString(2, otherID); // toID 설정
+	        } else {
+	            SQL = "UPDATE CHAT SET isDeletedByToID = TRUE WHERE fromID = ? AND toID = ?";
+	            pstmt = conn.prepareStatement(SQL);
+	            pstmt.setString(1, otherID); // fromID 설정
+	            pstmt.setString(2, userID); // toID로서 userID 설정
+	        }
+
+	        int result = pstmt.executeUpdate();
+	        return result > 0; // 업데이트 성공 시 true 반환
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+	private boolean isFromUser(Connection conn, String userID, String otherID) throws SQLException {
+	    String SQL = "SELECT COUNT(*) FROM CHAT WHERE fromID = ? AND toID = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+	        pstmt.setString(1, userID);
+	        pstmt.setString(2, otherID);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                int count = rs.getInt(1);
+	                System.out.println("isFromUser: userID = " + userID + ", otherID = " + otherID + ", count = " + count);
+	                return count > 0;
+	            }
+	        }
+	    }
+	    return false;
 	}
 }

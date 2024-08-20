@@ -295,6 +295,38 @@ a:hover{
 	background-color: #dddddd;
 }
 
+#boxTable tr {
+    height: 80px; /* 채팅방 높이 설정 */
+}
+
+#boxTable td {
+    vertical-align: middle;
+}
+
+.delete-chat {
+    cursor: pointer;
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 1.2em;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.chat-content {
+    position: relative;
+}
+
+.chat-time {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.chat-nickname {
+    width: 150px;
+}
+
 @media(max-width: 767px){
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
 		color: #ffffff;

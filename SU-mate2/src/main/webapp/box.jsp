@@ -58,51 +58,125 @@
 	function showUnread(result){
 		$('#unread').html(result);
 	}
-	function chatBoxFunction(){
-		var userID = '<%= userID %>'
-		$.ajax({
-			type: "POST",
-			url: "./chatBox",
-			data: {
-				userID :encodeURIComponent(userID),
-			},
-			success: function(data){
-				 console.log("data="+data); // 응답 데이터 확인
-				if(data == "" ) return;
-				$('#boxTable').html('');
-				var parsed = JSON.parse(data);
-				var result = parsed.result;
-				for(var i = 0; i < result.length; i++){
-	                var toID = (result[i][0].value == userID) ? result[i][1].value : result[i][0].value;
-	                var lastID = (result[i][0].value == userID) ? result[i][1].value : result[i][0].value;
+	function chatBoxFunction() {
+	    var userID = '<%= userID %>';
+	    $.ajax({
+	        type: "POST",
+	        url: "./chatBox",
+	        data: {
+	            userID: encodeURIComponent(userID),
+	        },
+	        success: function(data) {
+	            console.log("data=" + data); // 응답 데이터 확인
+	            if (data == "") return;
+	            $('#boxTable').html('');
+	            var parsed = JSON.parse(data);
+	            var result = parsed.result;
+
+	            // 각 메시지에서 삭제 플래그를 확인하여 표시
+	            for (var i = 0; i < result.length; i++) {
+	                var fromID = result[i][0].value;
+	                var toID = result[i][1].value;
 	                var chatContent = result[i][2].value;
 	                var chatTime = result[i][3].value;
-	                var unread = result[i][4].value;
-					addBox(result[i][0].value, result[i][1].value, result[i][2].value, result[i][3].value, result[i][4].value);
-				}
-			}
-		});
+	                var isDeletedByFromID = result[i][5] ? result[i][5].value : false;
+	                var isDeletedByToID = result[i][6] ? result[i][6].value : false;
+
+	                // 현재 사용자가 fromID인 경우 isDeletedByFromID 체크
+	                // 현재 사용자가 toID인 경우 isDeletedByToID 체크
+	                if ((userID === fromID && isDeletedByFromID === "true") || 
+	                    (userID === toID && isDeletedByToID === "true")) {
+	                    continue; // 삭제된 채팅방은 표시하지 않음
+	                }
+	                
+	                // 적절하게 addBox 함수에 필요한 값을 전달
+	                addBox(fromID, toID, chatContent, chatTime);
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error during chatBoxFunction: " + error);
+	        }
+	    });
 	}
 	function addBox(lastID, toID, chatContent, chatTime){
 	    $.ajax({
 	        type: "GET",
-	        url: "getChatNickname.jsp",  // 닉네임을 가져오는 JSP
+	        url: "getChatNickname.jsp",
 	        data: { toID: toID },
 	        success: function(response){
 	            var nickname = JSON.parse(response).nickname;
 	            console.log("Adding box for toID:", toID);
-	            $('#boxTable').append('<tr onclick="location.href=\'chat.jsp?toID='+ encodeURIComponent(toID) + '\'">' +
-	                '<td style="width: 150px;"><h5>' + nickname + '</h5></td>' +  // 닉네임 표시
-	                '<td>' +
-	                '<h5>' + chatContent + '</h5>' +
-	                '<div class="pull-right">' + chatTime + '</div>' +
-	                '</td>' + 
+	            $('#boxTable').append('<tr id="chat-' + toID + '">' +
+	                '<td style="width: 150px;"><h5>' + nickname + '</h5></td>' +
+	                '<td style="position: relative;">' +
+	                    '<div style="position: absolute; top: 5px; right: 5px;">' +
+	                        '<span class="delete-chat" onclick="deleteChat(\'' + toID + '\'); event.stopPropagation();">&times;</span>' +
+	                    '</div>' +
+	                    '<h5>' + chatContent + '</h5>' +
+	                    '<div style="position: absolute; bottom: 5px; right: 5px;">' +
+	                        '<span>' + chatTime + '</span>' +
+	                    '</div>' +
+	                '</td>' +
 	                '</tr>');
+	            
+	            // 채팅방 클릭 이벤트
+	            $('#chat-' + toID).click(function() {
+	                location.href = 'chat.jsp?toID=' + encodeURIComponent(toID);
+	            });
 	        },
 	        error: function(){
 	            console.log("Error retrieving nickname for toID:", toID);
 	        }
 	    });
+	}
+
+	function deleteChat(toID) {
+	    if (confirm("이 채팅방을 삭제하시겠습니까?")) {
+	        $.ajax({
+	            type: "POST",
+	            url: "deleteChat.jsp", // 서버에서 채팅방 삭제를 처리할 JSP
+	            data: { 
+	                userID: '<%= userID %>',
+	                toID: toID
+	            },
+	            success: function(response) {
+	            	console.log("Server response: " + response); // 서버 응답 로그
+	                if(response.trim() === "success") {
+	                    $('#chat-' + toID).remove(); // 화면에서 채팅방 제거
+	                   	alert("채팅방이 성공적으로 삭제되었습니다.");
+	                } else {
+	                    alert("채팅방 삭제에 실패했습니다.");
+	                }
+	            },
+	            error: function() {
+	                alert("채팅방 삭제 중 오류가 발생했습니다.");
+	            }
+	        });
+	    }
+	}
+
+	// CSS 스타일 추가
+	$(document).ready(function() {
+	    $('<style>')
+	        .text(
+	            '.delete-chat { ' +
+	            '    cursor: pointer;' +
+	            '    color: #ff0000;' +
+	            '    font-weight: bold;' +
+	            '    font-size: 1.2em;' +
+	            '    margin-right: 5px;' +
+	            '}' +
+	            '.delete-chat:hover {' +
+	            '    color: #cc0000;' +
+	            '}'
+	        )
+	        .appendTo('head');
+	});
+	
+	function getInfiniteBox(){
+		setInterval(function(){
+			chatBoxFunction();
+		}, 3000);
 	}
 </script>
 <title>추가기능 채팅 구현</title>
@@ -124,48 +198,6 @@
 				</div>
 			</table>
 		</div>
-		<% 
-			String messageContent = null;
-			if(session.getAttribute("messageContent") != null){
-				messageContent = (String) session.getAttribute("messageContent");
-			}
-			String messageType = null;
-			if(session.getAttribute("messageType") != null){
-				messageType = (String) session.getAttribute("messageType");
-			}
-			if (messageContent != null){
-		%>
-		<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-				<div class="modal-dialog vertical-align-center">
-					<div class="modal-content <% if(messageType.equals("오류 메시지")) out.println("panel-warning"); else out.println("panel-success"); %>">
-						<div class="modal-header panel-heading">
-							<button type="button" class="close" data-dismiss="modal">
-								<span aria-hidden="true">&times</span>
-								<span class="sr-only">Close</span>
-							</button>
-							<h4 class="modal-title">
-								<%= messageType %>
-							</h4>
-						</div>
-						<div class="modal-body">
-							<%= messageContent %>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<script>
-			$('#messageModal').modal("show");
-		</script>
-		<%
-			session.removeAttribute("messageContent");
-			session.removeAttribute("messageType");
-			}
-		%>
 		<%
 			if(userID != null){
 				

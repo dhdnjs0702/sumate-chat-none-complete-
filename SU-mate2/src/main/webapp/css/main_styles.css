@@ -42,7 +42,6 @@ body {
 
 .menu {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 20px;
 }
@@ -510,6 +509,7 @@ body {
     background-color: #555;
 }
 
+
 @media (max-width: 1200px) {
     .roommate-item {
         flex: 1 1 calc(50% - 20px);
@@ -522,6 +522,7 @@ body {
         flex-direction: column;
         align-items: flex-start;
         height: auto;
+        padding: 10px;
     }
 
     .menu {
