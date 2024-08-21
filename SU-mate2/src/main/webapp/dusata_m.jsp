@@ -8,10 +8,10 @@
 <%@ page import="org.json.simple.parser.*" %>
 
 <%
-	String userID=null;
-	if(session.getAttribute("id") !=null){
-		userID = (String) session.getAttribute("id");
-	}
+    String userID=null;
+    if(session.getAttribute("id") !=null){
+        userID = (String) session.getAttribute("id");
+    }
 %>
 <%
     // 로그인 상태 확인
@@ -59,22 +59,20 @@
     </div>
 </div>
 <%
-			if(userID != null){
-				
-		%>
-		 <script type="text/javascript">
-		 	$(document).ready(function(){
-				getUnread();
-		 		getInfiniteUnread();
-		 		
-		 		getInfiniteBox();
-		 	});
-		 </script>
-		<%
-			}
-		%>
-
-
+            if(userID != null){
+                
+        %>
+         <script type="text/javascript">
+            $(document).ready(function(){
+                getUnread();
+                getInfiniteUnread();
+                
+                getInfiniteBox();
+            });
+         </script>
+        <%
+            }
+        %>
 
 <%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
 </div>
@@ -144,6 +142,7 @@ function show(feeds) {
 
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
         var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
+        var timestamp = feeds[i].ts; // 작성 시간 가져오기
         
         // 글자 수 제한 (최대 25자 * 4줄)
         var content = feeds[i].content;
@@ -161,10 +160,16 @@ function show(feeds) {
             }
         }
         
-        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>";
+        str += "<div class='postit'>";
         str += "<div class='postit-header'>";
-        str += "<small class='postit-nickname'>" + nickname + "</small>";
-        str += "<small class='postit-timestamp'>" + feeds[i].ts + "</small>";
+        str += "<small class='postit-nickname'>" + nickname + " (" + timestamp + ")</small>";
+        str += "<div class='postit-options' onclick='event.stopPropagation(); toggleOptions(" + feeds[i].no + ")'>...</div>";
+        str += "<div id='options-" + feeds[i].no + "' class='options-dropdown'>";
+        str += "<div onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>채팅하기</div>";
+        if (userID === '<%= userID %>') {
+            str += "<div onclick='deletePost(" + feeds[i].no + ")'>글 삭제</div>";
+        }
+        str += "</div>";
         str += "</div>";
         str += "<div class='postit-body'>" + imgstr;
         str += "<div class='postit-content'>" + formattedContent + "</div>";
@@ -179,39 +184,67 @@ function addFeed() {
     window.location.href = "feedAdd_dufemale.html";
 }
 
+function deletePost(feedNo) {
+    if (confirm("이 글을 삭제하시겠습니까?")) {
+        AJAX.call("feedDelete.jsp", { no: feedNo }, function(response) {
+            if (response.trim() === "success") {
+                alert("글이 삭제되었습니다.");
+                location.reload(); // 페이지 새로고침으로 업데이트
+            } else {
+                alert("글 삭제에 실패했습니다.");
+            }
+        });
+    }
+}
+
+function toggleOptions(feedNo) {
+    var options = document.getElementById('options-' + feedNo);
+    if (options.style.display === 'block') {
+        options.style.display = 'none';
+    } else {
+        options.style.display = 'block';
+    }
+    
+    document.addEventListener('click', function(event) {
+        if (!options.contains(event.target) && event.target.className !== 'postit-options') {
+            options.style.display = 'none';
+        }
+    }, { once: true });
+}
+
 function getUnread(){
-	var userID = '<%= userID %>';
+    var userID = '<%= userID %>';
     console.log("userID in getUnread: " + userID);
-	$.ajax({
-		type: "POST",
-		url: "./chatUnread",
-		data: {
-			userID :encodeURIComponent('<%= userID%>'),
-		},
-		success: function(result){
-			if(result >=1){
-				console.log("result(com)="+ result);
-				showUnread(result);
-			} else{
-				console.log("result(else)="+ result);
-				showUnread('');
-			}
-	       }
-	});
+    $.ajax({
+        type: "POST",
+        url: "./chatUnread",
+        data: {
+            userID :encodeURIComponent('<%= userID%>'),
+        },
+        success: function(result){
+            if(result >=1){
+                console.log("result(com)="+ result);
+                showUnread(result);
+            } else{
+                console.log("result(else)="+ result);
+                showUnread('');
+            }
+           }
+    });
 }
 function getInfiniteUnread(){
-	setInterval(function(){
-		getUnread();
-	}, 4000)
+    setInterval(function(){
+        getUnread();
+    }, 4000)
 }
 function showUnread(result){
-	 var unreadElement = $('#unread');
-	    if(result && result.trim() !== "") {
-	        unreadElement.html(result);
-	        unreadElement.show(); 
-	    } else {
-	        unreadElement.hide(); 
-	    }
+     var unreadElement = $('#unread');
+        if(result && result.trim() !== "") {
+            unreadElement.html(result);
+            unreadElement.show(); 
+        } else {
+            unreadElement.hide(); 
+        }
 }
 
 document.querySelector('.feed-add-button').addEventListener('click', addFeed);

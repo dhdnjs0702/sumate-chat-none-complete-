@@ -243,13 +243,8 @@ DataSource dataSource;
 	            chat.setToID(rs.getString("toID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
 	            chat.setChatContent(rs.getString("chatContent").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
 	            
-	            int chatTime = Integer.parseInt(rs.getString("chatTime").substring(11,13));
-	            String timeType = "오전";
-	            if (chatTime > 12) {
-	                timeType = "오후";
-	                chatTime -= 12;
-	            }
-	            chat.setChatTime(rs.getString("chatTime").substring(0,11) + " " + timeType + " " + chatTime + ":" + rs.getString("chatTime").substring(14, 16));
+	            // 시간 형식을 표준화된 형태로 그대로 유지
+	            chat.setChatTime(rs.getString("chatTime"));
 	            chatList.add(chat);
 	        }
 	    } catch (Exception e) {

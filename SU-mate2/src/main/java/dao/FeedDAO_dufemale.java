@@ -159,4 +159,25 @@ public String getGroup(int maxNo) throws NamingException, SQLException {
         if (conn != null) conn.close();
     }
   }
+
+public boolean deleteFeed(int feedNo, String userID) throws NamingException, SQLException {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+
+    try {
+        conn = ConnectionPool.get();  // ConnectionPool을 통해 커넥션을 가져옴
+
+        String SQL = "DELETE FROM fmfeed WHERE no = ? AND id = ?";
+        stmt = conn.prepareStatement(SQL);
+        stmt.setInt(1, feedNo);
+        stmt.setString(2, userID);
+
+        int result = stmt.executeUpdate();
+        return result > 0; // 삭제 성공 시 true 반환
+
+    } finally {
+        if (stmt != null) stmt.close();
+        if (conn != null) conn.close();
+    }
+}
 }

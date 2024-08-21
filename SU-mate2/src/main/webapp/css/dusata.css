@@ -572,7 +572,7 @@ body {
 }
 
 .postit-content {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     text-align: center;
     overflow: hidden; /* 텍스트가 넘칠 경우 잘림 처리 */
@@ -601,14 +601,14 @@ body {
 
 .postit-header {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: space-between; /* 좌우 정렬을 위해 사용 */
+    align-items: center; /* 수직 정렬을 동일하게 맞춤 */
+    padding: 8px; /* 패딩으로 적절한 간격 추가 */
 }
 
 .postit-nickname {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
-    text-align: left;
 }
 
 .postit-timestamp {
@@ -665,6 +665,32 @@ body {
     border-radius: 20px;
     font-size: 16px;
     cursor: pointer;
+}
+
+.postit-options {
+    cursor: pointer;
+    font-size: 24px; /* ... 크기를 키움 */
+    padding: 8px; /* 클릭할 수 있는 영역을 넓힘 */
+}
+
+.options-dropdown {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.options-dropdown div {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.options-dropdown div:hover {
+    background-color: #ddd;
 }
 
 #loadMoreButton:hover {

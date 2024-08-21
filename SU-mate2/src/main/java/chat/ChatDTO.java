@@ -6,6 +6,8 @@ public class ChatDTO {
 	String toID;
 	String chatContent;
 	String chatTime;
+	String otherID;
+	int unreadCount;
 	
 	
 	public int getChatID() {
@@ -25,6 +27,18 @@ public class ChatDTO {
 	}
 	public void setToID(String toID) {
 		this.toID = toID;
+	}
+	public String getOtherID() {
+		return otherID;
+	}
+	public void setOtherID(String otherID) {
+		this.otherID = otherID;
+	}
+	public int getUnreadCount() {
+		return unreadCount;
+	}
+	public void setUnreadCount(int unreadCount) {
+		this.unreadCount = unreadCount;
 	}
 	public String getChatContent() {
 		return chatContent;

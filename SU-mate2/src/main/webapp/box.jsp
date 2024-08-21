@@ -71,6 +71,7 @@
 	
 	var lastUpdateTime = {};
 
+	
 	function chatBoxFunction() {
 	    var userID = '<%= userID %>';
 	    $.ajax({
@@ -90,10 +91,7 @@
 	                data: { userID: userID },
 	                dataType: 'json',
 	                success: function(unreadCounts) {
-	                    var updatedChats = [];
-	                    var existingChats = $('#boxTable tr').map(function() {
-	                        return this.id.replace('chat-', '');
-	                    }).get();
+	                    var chatList = [];
 
 	                    for (var i = 0; i < result.length; i++) {
 	                        var fromID = result[i][0].value;
@@ -107,47 +105,35 @@
 	                            (userID === toID && isDeletedByToID === "true")) {
 	                            continue;
 	                        }
-	                        
+
 	                        var unreadCount = unreadCounts[fromID] || 0;
 	                        var chatID = 'chat-' + toID;
 
-	                        if (!lastUpdateTime[chatID] || new Date(chatTime) > new Date(lastUpdateTime[chatID])) {
-	                            updatedChats.push({fromID: fromID, toID: toID, chatContent: chatContent, chatTime: chatTime, unreadCount: unreadCount});
-	                            lastUpdateTime[chatID] = chatTime;
-	                        }
-
-	                        var index = existingChats.indexOf(toID);
-	                        if (index > -1) {
-	                            existingChats.splice(index, 1);
-	                        }
+	                        chatList.push({
+	                            fromID: fromID,
+	                            toID: toID,
+	                            chatContent: chatContent,
+	                            chatTime: chatTime,
+	                            unreadCount: unreadCount
+	                        });
 	                    }
+	                    
+	                 // 디버깅용 콘솔 로그
+	                    console.log("Before sorting:", chatList);
 
-	                    // 정렬 (최신 메시지 순)
-	                    updatedChats.sort(function(a, b) {
+	                    // 최신 메시지 시간 기준으로 정렬
+	                    chatList.sort(function(a, b) {
 	                        return new Date(b.chatTime) - new Date(a.chatTime);
 	                    });
 
-	                    // 업데이트된 채팅방 처리
-	                    for (var i = 0; i < updatedChats.length; i++) {
-	                        var chat = updatedChats[i];
-	                        updateOrAddBox(chat.fromID, chat.toID, chat.chatContent, chat.chatTime, chat.unreadCount);
+	                 // 정렬 후 상태를 로그로 확인
+	                    console.log("After sorting:", chatList);
+	                    
+	                    // 정렬된 채팅방을 UI에 추가 또는 업데이트
+	                    $('#boxTable').empty(); // 기존 채팅방 리스트 초기화
+	                    for (var i = 0; i < chatList.length; i++) {
+	                        updateOrAddBox(chatList[i].fromID, chatList[i].toID, chatList[i].chatContent, chatList[i].chatTime, chatList[i].unreadCount);
 	                    }
-
-	                    // 서버에서 반환되지 않은 채팅방 제거
-	                    for (var i = 0; i < existingChats.length; i++) {
-	                        $('#chat-' + existingChats[i]).remove();
-	                    }
-
-	                    // 전체 목록 재정렬
-	                    var chatBoxes = $('#boxTable tr').get();
-	                    chatBoxes.sort(function(a, b) {
-	                        var timeA = new Date($(a).find('.chat-time').text());
-	                        var timeB = new Date($(b).find('.chat-time').text());
-	                        return timeB - timeA;
-	                    });
-	                    $.each(chatBoxes, function(index, row) {
-	                        $('#boxTable').append(row);
-	                    });
 	                },
 	                error: function(jqXHR, textStatus, errorThrown) {
 	                    console.error("Error fetching unread counts:", textStatus, errorThrown);
@@ -163,7 +149,7 @@
 	function updateOrAddBox(fromID, toID, chatContent, chatTime, unreadCount) {
 	    var chatID = 'chat-' + toID;
 	    var $existingChat = $('#' + chatID);
-	    
+
 	    if ($existingChat.length) {
 	        // 기존 채팅방 업데이트
 	        $existingChat.find('.chat-content').text(chatContent);
@@ -183,7 +169,6 @@
 	        addBox(fromID, toID, chatContent, chatTime, unreadCount);
 	    }
 	}
-
 	function updateBox(fromID, toID, chatContent, chatTime, unreadCount) {
 	    var chatID = 'chat-' + toID;
 	    var $existingChat = $('#' + chatID);
