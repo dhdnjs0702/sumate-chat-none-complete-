@@ -8,9 +8,14 @@
 <%@ page import="org.json.simple.parser.*" %>
 
 <%
+	String userID=null;
+	if(session.getAttribute("id") !=null){
+		userID = (String) session.getAttribute("id");
+	}
+%>
+<%
     // 로그인 상태 확인
-    String uid = (String) session.getAttribute("id");
-    if (uid == null) {
+    if (userID == null) {
 %>
         <script type="text/javascript">
             alert("로그인 후 이용가능한 컨텐츠입니다.");
@@ -21,7 +26,8 @@
     }
 
     // 로그인 상태인 경우 세션에 사용자 ID를 다시 설정 (필요에 따라)
-    session.setAttribute("id", uid);
+    session.setAttribute("id", userID);
+   
 %>
 <!DOCTYPE html>
 <html>
@@ -43,7 +49,7 @@
     </div>
     <div class="gender-selector">
         <button id="maleBtn" data-gender="male" class="gender-btn selected" onclick="window.location.href='dusata_m.jsp'">남</button>
-        <button id="femaleBtn" data-gender="female" class="gender-btn" onclick="window.location.href='dusata_f.jsp'">여</button>
+        <button id="femaleBtn" data-gender="female" class="gender-btn " onclick="window.location.href='dusata_f.jsp'">여</button>
     </div>
     <div id="feedContainer">
         <!-- 여기에 JavaScript로 동적으로 게시물이 추가됩니다 -->
@@ -52,6 +58,22 @@
         <button id="loadMoreButton" onclick="loadMoreFeeds()">작성글 더 보기</button>
     </div>
 </div>
+<%
+			if(userID != null){
+				
+		%>
+		 <script type="text/javascript">
+		 	$(document).ready(function(){
+				getUnread();
+		 		getInfiniteUnread();
+		 		
+		 		getInfiniteBox();
+		 	});
+		 </script>
+		<%
+			}
+		%>
+
 
 
 <%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
@@ -72,16 +94,16 @@ function start(uid) {
 }
 
 $(document).ready(function() {
-    start('<%=uid%>');
+    start('<%=userID%>');
     
-    // 이벤트 리스너 설정 (중복 방지)
+    
     $('.feed-add-button').off('click').on('click', addFeed);
     $('#loadMoreButton').off('click').on('click', loadMoreFeeds);
 });
 
 function loadMoreFeeds() {
-    if (isLoading) return; // 이미 로딩 중이면 새로운 요청을 막음
-    isLoading = true; // 로딩 시작
+    if (isLoading) return; 
+    isLoading = true; 
     
     AJAX.call("feedGetGroup_dum.jsp", {maxNo: minNo}, function(data) {
         var feeds = JSON.parse(data.trim());
@@ -91,19 +113,19 @@ function loadMoreFeeds() {
         } else {
             $("#loadMoreButton").hide();
         }
-        isLoading = false; // 로딩 끝
+        isLoading = false; 
     });
 }
 
 function redirectToChat(toID, nickname) {
-    var userID = '<%= uid %>'; // 현재 로그인한 사용자의 ID를 JSP에서 가져옴
+    var userID = '<%= userID %>'; // 현재 로그인한 사용자의 ID를 JSP에서 가져옴
 
     if (toID && toID.trim() !== "") {
         if (userID === toID) {
             alert("자기자신과는 채팅할 수 없습니다.");
         } else {
             var confirmMessage = nickname + "님과 채팅하시겠습니까?";
-            if (confirm(confirmMessage)) { // 확인 창에서 "예"를 누르면 채팅방으로 이동
+            if (confirm(confirmMessage)) { 
                 window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
             }
         }
@@ -150,11 +172,46 @@ function show(feeds) {
         str += "</div>";
     }
     str += "</div>";
-    $("#feedContainer").append(str);  // append를 사용하여 기존 내용에 추가
+    $("#feedContainer").append(str);  
 }
 
 function addFeed() {
-    window.location.href = "feedAdd_dumale.html";
+    window.location.href = "feedAdd_dufemale.html";
+}
+
+function getUnread(){
+	var userID = '<%= userID %>';
+    console.log("userID in getUnread: " + userID);
+	$.ajax({
+		type: "POST",
+		url: "./chatUnread",
+		data: {
+			userID :encodeURIComponent('<%= userID%>'),
+		},
+		success: function(result){
+			if(result >=1){
+				console.log("result(com)="+ result);
+				showUnread(result);
+			} else{
+				console.log("result(else)="+ result);
+				showUnread('');
+			}
+	       }
+	});
+}
+function getInfiniteUnread(){
+	setInterval(function(){
+		getUnread();
+	}, 4000)
+}
+function showUnread(result){
+	 var unreadElement = $('#unread');
+	    if(result && result.trim() !== "") {
+	        unreadElement.html(result);
+	        unreadElement.show(); 
+	    } else {
+	        unreadElement.hide(); 
+	    }
 }
 
 document.querySelector('.feed-add-button').addEventListener('click', addFeed);

@@ -18,7 +18,8 @@ public class ChatUnreadServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		String userID = request.getParameter("id");
+		String userID = request.getParameter("userID");
+		System.out.print("userID="+userID);
 		if (userID == null || userID.equals("")) {
 			response.getWriter().write("0");
 			

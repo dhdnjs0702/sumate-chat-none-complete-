@@ -36,7 +36,7 @@
             e.printStackTrace();
         }
 
-        out.print("<script>alert('로그인 성공!'); location.href='mainPage.jsp';</script>");
+        out.print("<script>alert('성공적으로 로그인되었습니다.'); location.href='mainPage.jsp';</script>");
     } else {
         out.print("<script>alert('로그인에 실패했습니다.'); history.back();</script>");
     }

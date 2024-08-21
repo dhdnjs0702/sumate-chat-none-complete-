@@ -1,9 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- <%
+<%
+	String userID=null;
+	if(session.getAttribute("id") !=null){
+		userID = (String) session.getAttribute("id");
+	}
+%>
+<%
     // 로그인 상태 확인
-    String uid = (String) session.getAttribute("id");
-    if (uid == null) {
+    if (userID == null) {
 %>
         <script type="text/javascript">
             alert("로그인 후 이용가능한 컨텐츠입니다.");
@@ -14,7 +19,8 @@
     }
 
     // 로그인 상태인 경우 세션에 사용자 ID를 다시 설정 (필요에 따라)
-    session.setAttribute("id", uid);
+    session.setAttribute("id", userID);
+   
 %>
 <!DOCTYPE html>
 <html>
@@ -22,6 +28,7 @@
 <meta charset="UTF-8">
 <title>메인페이지(로그인 후)</title>
 <link rel="stylesheet" href="css/main_styles.css">
+<script src="js/jquery-3.7.1.min.js"></script>
 </head>
 <body>
  <%@ include file="header_login.jsp" %> 
@@ -107,6 +114,22 @@
             </div>
         </div>
     </div>
+    
+    <%
+			if(userID != null){
+				
+		%>
+		 <script type="text/javascript">
+		 	$(document).ready(function(){
+				getUnread();
+		 		getInfiniteUnread();
+		 		chatBoxFunction();
+		 	});
+		 </script>
+		<%
+			}
+		%>
+    
 
     <script src="js/main_page.js"></script>
    
@@ -114,7 +137,42 @@
 <%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
 
     <script>
-        // JavaScript 코드: 'SU-mate' 제목 클릭 시 mainPage.jsp로 이동
+    function getUnread(){
+    	var userID = '<%= userID %>';
+        console.log("userID in getUnread: " + userID);
+    	$.ajax({
+    		type: "POST",
+    		url: "./chatUnread",
+    		data: {
+    			userID :encodeURIComponent('<%= userID%>'),
+    		},
+    		success: function(result){
+    			if(result >=1){
+    				console.log("result(com)="+ result);
+    				showUnread(result);
+    			} else{
+    				console.log("result(else)="+ result);
+    				showUnread('');
+    			}
+    	       }
+    	});
+    }
+    function getInfiniteUnread(){
+    	setInterval(function(){
+    		getUnread();
+    	}, 4000)
+    }
+    function showUnread(result){
+    	 var unreadElement = $('#unread');
+    	    if(result && result.trim() !== "") {
+    	        unreadElement.html(result);
+    	        unreadElement.show(); 
+    	    } else {
+    	        unreadElement.hide(); 
+    	    }
+    }
+    
+     
         document.getElementById('title').addEventListener('click', () => {
             window.location.href = 'mainPage.jsp';
         });

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -218,11 +220,15 @@ DataSource dataSource;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    // SQL 쿼리 수정: 사용자에 따라 삭제된 채팅방을 필터링
-	    String SQL = "SELECT * FROM CHAT WHERE (toID = ? AND isDeletedByToID = 0) "
-	               + "OR (fromID = ? AND isDeletedByFromID = 0) "
-	               + "ORDER BY chatTime DESC";
-	    
+	    // 각 사용자 간의 마지막 메시지만 가져오는 SQL 쿼리
+	    String SQL = "SELECT * FROM CHAT c1 WHERE c1.chatID = ("
+	               + "SELECT MAX(c2.chatID) FROM CHAT c2 "
+	               + "WHERE (c2.fromID = c1.fromID AND c2.toID = c1.toID) "
+	               + "OR (c2.fromID = c1.toID AND c2.toID = c1.fromID)) "
+	               + "AND ((c1.toID = ? AND c1.isDeletedByToID = 0) "
+	               + "OR (c1.fromID = ? AND c1.isDeletedByFromID = 0)) "
+	               + "ORDER BY c1.chatTime DESC";
+
 	    try {
 	        conn = dataSource.getConnection();
 	        pstmt = conn.prepareStatement(SQL);
@@ -236,6 +242,7 @@ DataSource dataSource;
 	            chat.setFromID(rs.getString("fromID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
 	            chat.setToID(rs.getString("toID").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
 	            chat.setChatContent(rs.getString("chatContent").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+	            
 	            int chatTime = Integer.parseInt(rs.getString("chatTime").substring(11,13));
 	            String timeType = "오전";
 	            if (chatTime > 12) {
@@ -245,25 +252,6 @@ DataSource dataSource;
 	            chat.setChatTime(rs.getString("chatTime").substring(0,11) + " " + timeType + " " + chatTime + ":" + rs.getString("chatTime").substring(14, 16));
 	            chatList.add(chat);
 	        }
-
-	        // 중복된 대화 제거 로직
-	        for (int i = 0; i < chatList.size(); i++) {
-	            ChatDTO x = chatList.get(i);
-	            for (int j = 0; j < chatList.size(); j++) {
-	                ChatDTO y = chatList.get(j);
-	                if (x.getFromID().equals(y.getToID()) && x.getToID().equals(y.getFromID())) {
-	                    if (x.getChatID() < y.getChatID()) {
-	                        chatList.remove(x);
-	                        i--;
-	                        break;
-	                    } else {
-	                        chatList.remove(y);
-	                        j--;
-	                    }
-	                }
-	            }
-	        }
-	        
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
@@ -359,4 +347,39 @@ DataSource dataSource;
 	    }
 	    return false;
 	}
+	
+	public Map<String, Integer> getUnreadMessageCountByChat(String userID) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Map<String, Integer> unreadCounts = new HashMap<>();
+
+        String SQL = "SELECT fromID, COUNT(chatID) AS unreadCount " +
+                     "FROM CHAT WHERE toID = ? AND chatRead = 0 " +
+                     "GROUP BY fromID";
+        
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, userID);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String fromID = rs.getString("fromID");
+                int count = rs.getInt("unreadCount");
+                unreadCounts.put(fromID, count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (conn != null) conn.close();
+                if (pstmt != null) pstmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return unreadCounts;
+    }
 }

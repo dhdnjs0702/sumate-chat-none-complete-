@@ -3,12 +3,12 @@
 <%@ page import="dao.UserDAO" %>
 <!DOCTYPE html>
 <html>
-		<%
-			String userID=null;
-			if(session.getAttribute("id") !=null){
-				userID = (String) session.getAttribute("id");
-			}
-		%>
+<%
+	String userID=null;
+	if(session.getAttribute("id") !=null){
+		userID = (String) session.getAttribute("id");
+	}
+%>
 <%
     // 로그인 상태 확인
     if (userID == null) {
@@ -35,6 +35,8 @@
 <script src="js/bootstrap.js"></script>
 <script type="text/javascript">
 	function getUnread(){
+		var userID = '<%= userID %>';
+	    console.log("userID in getUnread: " + userID);
 		$.ajax({
 			type: "POST",
 			url: "./chatUnread",
@@ -43,8 +45,10 @@
 			},
 			success: function(result){
 				if(result >=1){
+					console.log("result(com)="+ result);
 					showUnread(result);
 				} else{
+					console.log("result(else)="+ result);
 					showUnread('');
 				}
 		       }
@@ -56,8 +60,17 @@
 		}, 4000)
 	}
 	function showUnread(result){
-		$('#unread').html(result);
+		 var unreadElement = $('#unread');
+		    if(result && result.trim() !== "") {
+		        unreadElement.html(result);
+		        unreadElement.show(); 
+		    } else {
+		        unreadElement.hide(); 
+		    }
 	}
+	
+	var lastUpdateTime = {};
+
 	function chatBoxFunction() {
 	    var userID = '<%= userID %>';
 	    $.ajax({
@@ -67,57 +80,154 @@
 	            userID: encodeURIComponent(userID),
 	        },
 	        success: function(data) {
-	            console.log("data=" + data); // 응답 데이터 확인
 	            if (data == "") return;
-	            $('#boxTable').html('');
 	            var parsed = JSON.parse(data);
 	            var result = parsed.result;
 
-	            // 각 메시지에서 삭제 플래그를 확인하여 표시
-	            for (var i = 0; i < result.length; i++) {
-	                var fromID = result[i][0].value;
-	                var toID = result[i][1].value;
-	                var chatContent = result[i][2].value;
-	                var chatTime = result[i][3].value;
-	                var isDeletedByFromID = result[i][5] ? result[i][5].value : false;
-	                var isDeletedByToID = result[i][6] ? result[i][6].value : false;
+	            $.ajax({
+	                type: "POST",
+	                url: "getUnreadCounts.jsp",
+	                data: { userID: userID },
+	                dataType: 'json',
+	                success: function(unreadCounts) {
+	                    var updatedChats = [];
+	                    var existingChats = $('#boxTable tr').map(function() {
+	                        return this.id.replace('chat-', '');
+	                    }).get();
 
-	                // 현재 사용자가 fromID인 경우 isDeletedByFromID 체크
-	                // 현재 사용자가 toID인 경우 isDeletedByToID 체크
-	                if ((userID === fromID && isDeletedByFromID === "true") || 
-	                    (userID === toID && isDeletedByToID === "true")) {
-	                    continue; // 삭제된 채팅방은 표시하지 않음
+	                    for (var i = 0; i < result.length; i++) {
+	                        var fromID = result[i][0].value;
+	                        var toID = result[i][1].value;
+	                        var chatContent = result[i][2].value;
+	                        var chatTime = result[i][3].value;
+	                        var isDeletedByFromID = result[i][5] ? result[i][5].value : false;
+	                        var isDeletedByToID = result[i][6] ? result[i][6].value : false;
+
+	                        if ((userID === fromID && isDeletedByFromID === "true") || 
+	                            (userID === toID && isDeletedByToID === "true")) {
+	                            continue;
+	                        }
+	                        
+	                        var unreadCount = unreadCounts[fromID] || 0;
+	                        var chatID = 'chat-' + toID;
+
+	                        if (!lastUpdateTime[chatID] || new Date(chatTime) > new Date(lastUpdateTime[chatID])) {
+	                            updatedChats.push({fromID: fromID, toID: toID, chatContent: chatContent, chatTime: chatTime, unreadCount: unreadCount});
+	                            lastUpdateTime[chatID] = chatTime;
+	                        }
+
+	                        var index = existingChats.indexOf(toID);
+	                        if (index > -1) {
+	                            existingChats.splice(index, 1);
+	                        }
+	                    }
+
+	                    // 정렬 (최신 메시지 순)
+	                    updatedChats.sort(function(a, b) {
+	                        return new Date(b.chatTime) - new Date(a.chatTime);
+	                    });
+
+	                    // 업데이트된 채팅방 처리
+	                    for (var i = 0; i < updatedChats.length; i++) {
+	                        var chat = updatedChats[i];
+	                        updateOrAddBox(chat.fromID, chat.toID, chat.chatContent, chat.chatTime, chat.unreadCount);
+	                    }
+
+	                    // 서버에서 반환되지 않은 채팅방 제거
+	                    for (var i = 0; i < existingChats.length; i++) {
+	                        $('#chat-' + existingChats[i]).remove();
+	                    }
+
+	                    // 전체 목록 재정렬
+	                    var chatBoxes = $('#boxTable tr').get();
+	                    chatBoxes.sort(function(a, b) {
+	                        var timeA = new Date($(a).find('.chat-time').text());
+	                        var timeB = new Date($(b).find('.chat-time').text());
+	                        return timeB - timeA;
+	                    });
+	                    $.each(chatBoxes, function(index, row) {
+	                        $('#boxTable').append(row);
+	                    });
+	                },
+	                error: function(jqXHR, textStatus, errorThrown) {
+	                    console.error("Error fetching unread counts:", textStatus, errorThrown);
 	                }
-	                
-	                // 적절하게 addBox 함수에 필요한 값을 전달
-	                addBox(fromID, toID, chatContent, chatTime);
-	            }
+	            });
 	        },
-	        error: function(xhr, status, error) {
-	            console.error("Error during chatBoxFunction: " + error);
+	        error: function(jqXHR, textStatus, errorThrown) {
+	            console.error("Error fetching chat box:", textStatus, errorThrown);
 	        }
 	    });
 	}
-	function addBox(lastID, toID, chatContent, chatTime){
+
+	function updateOrAddBox(fromID, toID, chatContent, chatTime, unreadCount) {
+	    var chatID = 'chat-' + toID;
+	    var $existingChat = $('#' + chatID);
+	    
+	    if ($existingChat.length) {
+	        // 기존 채팅방 업데이트
+	        $existingChat.find('.chat-content').text(chatContent);
+	        $existingChat.find('.chat-time').text(chatTime);
+	        var $unreadBadge = $existingChat.find('.unread-badge');
+	        if (unreadCount > 0) {
+	            if ($unreadBadge.length) {
+	                $unreadBadge.text(unreadCount);
+	            } else {
+	                $existingChat.find('h5').first().append('<span class="badge bg-danger unread-badge">' + unreadCount + '</span>');
+	            }
+	        } else {
+	            $unreadBadge.remove();
+	        }
+	    } else {
+	        // 새로운 채팅방 추가
+	        addBox(fromID, toID, chatContent, chatTime, unreadCount);
+	    }
+	}
+
+	function updateBox(fromID, toID, chatContent, chatTime, unreadCount) {
+	    var chatID = 'chat-' + toID;
+	    var $existingChat = $('#' + chatID);
+	    
+	    if ($existingChat.length) {
+	        // 기존 채팅방 업데이트
+	        if (new Date(chatTime) > new Date(lastUpdateTime[chatID] || 0)) {
+	            $existingChat.find('.chat-content').text(chatContent);
+	            $existingChat.find('.chat-time').text(chatTime);
+	            $existingChat.find('.unread-badge').text(unreadCount > 0 ? unreadCount : '');
+	            
+	            // 새 메시지가 있으면 상단으로 이동
+	            if (unreadCount > 0) {
+	                $existingChat.prependTo('#boxTable');
+	            }
+	            
+	            lastUpdateTime[chatID] = chatTime;
+	        }
+	    } else {
+	        // 새로운 채팅방 추가
+	        addBox(fromID, toID, chatContent, chatTime, unreadCount);
+	    }
+	}
+	function addBox(lastID, toID, chatContent, chatTime, unreadCount){
 	    $.ajax({
 	        type: "GET",
 	        url: "getChatNickname.jsp",
 	        data: { toID: toID },
 	        success: function(response){
 	            var nickname = JSON.parse(response).nickname;
+	            var unreadBadge = unreadCount > 0 ? '<span class="badge bg-danger unread-badge">' + unreadCount + '</span>' : '';
 	            console.log("Adding box for toID:", toID);
 	            $('#boxTable').append('<tr id="chat-' + toID + '">' +
-	                '<td style="width: 150px;"><h5>' + nickname + '</h5></td>' +
-	                '<td style="position: relative;">' +
-	                    '<div style="position: absolute; top: 5px; right: 5px;">' +
-	                        '<span class="delete-chat" onclick="deleteChat(\'' + toID + '\'); event.stopPropagation();">&times;</span>' +
-	                    '</div>' +
-	                    '<h5>' + chatContent + '</h5>' +
-	                    '<div style="position: absolute; bottom: 5px; right: 5px;">' +
-	                        '<span>' + chatTime + '</span>' +
-	                    '</div>' +
-	                '</td>' +
-	                '</tr>');
+	                    '<td style="width: 150px;"><h5>' + nickname + ' ' + unreadBadge + '</h5></td>' +
+	                    '<td style="position: relative;">' +
+	                        '<div style="position: absolute; top: 5px; right: 5px;">' +
+	                            '<span class="delete-chat" onclick="deleteChat(\'' + toID + '\'); event.stopPropagation();">&times;</span>' +
+	                        '</div>' +
+	                        '<h5>' + chatContent + '</h5>' +
+	                        '<div style="position: absolute; bottom: 5px; right: 5px;">' +
+	                            '<span>' + chatTime + '</span>' +
+	                        '</div>' +
+	                    '</td>' +
+	                    '</tr>');
 	            
 	            // 채팅방 클릭 이벤트
 	            $('#chat-' + toID).click(function() {
@@ -129,6 +239,7 @@
 	        }
 	    });
 	}
+
 
 	function deleteChat(toID) {
 	    if (confirm("이 채팅방을 삭제하시겠습니까?")) {
@@ -187,7 +298,10 @@
 			<table class="table" style="margin: 0 auto;">
 				<thead>
 					<tr>
-						<th><h4>주고받은 메시지 목록</h4></th>
+						<th>
+						<h4>주고받은 메시지 목록</h4>
+						<button id="updateButton" class="btn btn-primary">새로운 채팅 불러오기</button>
+						</th>
 					</tr>
 				</thead>
 				<div style="overflow-y: quto; width: 100%; max-height: 450px;">
@@ -203,12 +317,19 @@
 				
 		%>
 		 <script type="text/javascript">
-		 	$(document).ready(function(){
-				getUnread();
-		 		getInfiniteUnread();
-		 		chatBoxFunction();
-		 		getInfiniteBox();
-		 	});
+		 $(document).ready(function(){
+			   
+			    chatBoxFunction();
+			    
+			    
+			    $('#updateButton').click(function() {
+			        chatBoxFunction();
+			    });
+			    
+			    getUnread();
+			    getInfiniteUnread();
+			});
+
 		 </script>
 		<%
 			}
