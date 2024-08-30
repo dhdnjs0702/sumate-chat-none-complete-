@@ -181,7 +181,7 @@ function show(feeds) {
 }
 
 function addFeed() {
-    window.location.href = "feedAdd_dufemale.html";
+    window.location.href = "feedWrite_dumale.jsp";
 }
 
 function deletePost(feedNo) {

@@ -176,7 +176,7 @@ function show(feeds) {
 }
 
 function addFeed() {
-    window.location.href = "feedAdd_dufemale.html";
+    window.location.href = "feedWrite_dufemlae.jsp";
 }
 
 function getUnread(){
