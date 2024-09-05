@@ -135,9 +135,9 @@ function redirectToChat(toID, nickname) {
 function show(feeds) {
     var str = "<div class='postit-container'>";
     for (var i = 0; i < feeds.length; i++) {
-        var img = feeds[i].images, imgstr = "";
+        var img = feeds[i].imageUrl, imgstr = ""; // 이미지 URL을 직접 사용
         if (img && img.trim() !== "") {
-            imgstr = "<img src='/SU-mate2/images/" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
+            imgstr = "<img src='" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
         }
 
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";

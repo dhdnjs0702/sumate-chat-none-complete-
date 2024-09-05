@@ -8,10 +8,10 @@
 <%@ page import="org.json.simple.parser.*" %>
 
 <%
-	String userID=null;
-	if(session.getAttribute("id") !=null){
-		userID = (String) session.getAttribute("id");
-	}
+    String userID=null;
+    if(session.getAttribute("id") !=null){
+        userID = (String) session.getAttribute("id");
+    }
 %>
 <%
     // 로그인 상태 확인
@@ -59,22 +59,20 @@
     </div>
 </div>
 <%
-			if(userID != null){
-				
-		%>
-		 <script type="text/javascript">
-		 	$(document).ready(function(){
-				getUnread();
-		 		getInfiniteUnread();
-		 		chatBoxFunction();
-		 		getInfiniteBox();
-		 	});
-		 </script>
-		<%
-			}
-		%>
-
-
+            if(userID != null){
+                
+        %>
+         <script type="text/javascript">
+            $(document).ready(function(){
+                getUnread();
+                getInfiniteUnread();
+                
+                getInfiniteBox();
+            });
+         </script>
+        <%
+            }
+        %>
 
 <%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
 </div>
@@ -96,14 +94,14 @@ function start(uid) {
 $(document).ready(function() {
     start('<%=userID%>');
     
-    // 이벤트 리스너 설정 (중복 방지)
+    
     $('.feed-add-button').off('click').on('click', addFeed);
     $('#loadMoreButton').off('click').on('click', loadMoreFeeds);
 });
 
 function loadMoreFeeds() {
-    if (isLoading) return; // 이미 로딩 중이면 새로운 요청을 막음
-    isLoading = true; // 로딩 시작
+    if (isLoading) return; 
+    isLoading = true; 
     
     AJAX.call("feedGetGroup_dufm.jsp", {maxNo: minNo}, function(data) {
         var feeds = JSON.parse(data.trim());
@@ -113,7 +111,7 @@ function loadMoreFeeds() {
         } else {
             $("#loadMoreButton").hide();
         }
-        isLoading = false; // 로딩 끝
+        isLoading = false; 
     });
 }
 
@@ -125,7 +123,7 @@ function redirectToChat(toID, nickname) {
             alert("자기자신과는 채팅할 수 없습니다.");
         } else {
             var confirmMessage = nickname + "님과 채팅하시겠습니까?";
-            if (confirm(confirmMessage)) { // 확인 창에서 "예"를 누르면 채팅방으로 이동
+            if (confirm(confirmMessage)) { 
                 window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
             }
         }
@@ -137,13 +135,14 @@ function redirectToChat(toID, nickname) {
 function show(feeds) {
     var str = "<div class='postit-container'>";
     for (var i = 0; i < feeds.length; i++) {
-        var img = feeds[i].images, imgstr = "";
+        var img = feeds[i].imageUrl, imgstr = ""; // 이미지 URL을 직접 사용
         if (img && img.trim() !== "") {
-            imgstr = "<img src='/SU-mate2/images/" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
+            imgstr = "<img src='" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
         }
 
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
         var userID = feeds[i].user ? feeds[i].user.id : ""; // 유저 ID 가져오기
+        var timestamp = feeds[i].ts; // 작성 시간 가져오기
         
         // 글자 수 제한 (최대 25자 * 4줄)
         var content = feeds[i].content;
@@ -161,10 +160,16 @@ function show(feeds) {
             }
         }
         
-        str += "<div class='postit' onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>";
+        str += "<div class='postit'>";
         str += "<div class='postit-header'>";
-        str += "<small class='postit-nickname'>" + nickname + "</small>";
-        str += "<small class='postit-timestamp'>" + feeds[i].ts + "</small>";
+        str += "<small class='postit-nickname'>" + nickname + " (" + timestamp + ")</small>";
+        str += "<div class='postit-options' onclick='event.stopPropagation(); toggleOptions(" + feeds[i].no + ")'>...</div>";
+        str += "<div id='options-" + feeds[i].no + "' class='options-dropdown'>";
+        str += "<div onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>채팅하기</div>";
+        if (userID === '<%= userID %>') {
+            str += "<div onclick='deletePost(" + feeds[i].no + ")'>글 삭제</div>";
+        }
+        str += "</div>";
         str += "</div>";
         str += "<div class='postit-body'>" + imgstr;
         str += "<div class='postit-content'>" + formattedContent + "</div>";
@@ -172,46 +177,74 @@ function show(feeds) {
         str += "</div>";
     }
     str += "</div>";
-    $("#feedContainer").append(str);  // append를 사용하여 기존 내용에 추가
+    $("#feedContainer").append(str);  
 }
 
 function addFeed() {
     window.location.href = "feedWrite_dufemlae.jsp";
 }
 
+function deletePost(feedNo) {
+    if (confirm("이 글을 삭제하시겠습니까?")) {
+        AJAX.call("feedDelete.jsp", { no: feedNo }, function(response) {
+            if (response.trim() === "success") {
+                alert("글이 삭제되었습니다.");
+                location.reload(); // 페이지 새로고침으로 업데이트
+            } else {
+                alert("글 삭제에 실패했습니다.");
+            }
+        });
+    }
+}
+
+function toggleOptions(feedNo) {
+    var options = document.getElementById('options-' + feedNo);
+    if (options.style.display === 'block') {
+        options.style.display = 'none';
+    } else {
+        options.style.display = 'block';
+    }
+    
+    document.addEventListener('click', function(event) {
+        if (!options.contains(event.target) && event.target.className !== 'postit-options') {
+            options.style.display = 'none';
+        }
+    }, { once: true });
+}
+
 function getUnread(){
-	var userID = '<%= userID %>';
+    var userID = '<%= userID %>';
     console.log("userID in getUnread: " + userID);
-	$.ajax({
-		type: "POST",
-		url: "./chatUnread",
-		data: {
-			userID :encodeURIComponent('<%= userID%>'),
-		},
-		success: function(result){
-			if(result >=1){
-				console.log("result(com)="+ result);
-				showUnread(result);
-			} else{
-				console.log("result(else)="+ result);
-				showUnread('');
-			}
-	       }
-	});
+    $.ajax({
+        type: "POST",
+        url: "./chatUnread",
+        data: {
+            userID :encodeURIComponent('<%= userID%>'),
+        },
+        success: function(result){
+            if(result >=1){
+                console.log("result(com)="+ result);
+                showUnread(result);
+            } else{
+                console.log("result(else)="+ result);
+                showUnread('');
+            }
+           }
+    });
 }
 function getInfiniteUnread(){
-	setInterval(function(){
-		getUnread();
-	}, 4000)
+    setInterval(function(){
+        getUnread();
+    }, 4000)
 }
 function showUnread(result){
-	 var unreadElement = $('#unread');
-	    if(result && result.trim() !== "") {
-	        unreadElement.html(result);
-	        unreadElement.show(); 
-	    } else {
-	        unreadElement.hide(); 
-	    }
+     var unreadElement = $('#unread');
+        if(result && result.trim() !== "") {
+            unreadElement.html(result);
+            unreadElement.show(); 
+        } else {
+            unreadElement.hide(); 
+        }
 }
 
 document.querySelector('.feed-add-button').addEventListener('click', addFeed);

@@ -75,11 +75,6 @@ $(document).ready(function() {
         $('#charCount').text(charCount + " / 100");
     });
 
-    // 이미지 선택 버튼 클릭 시 경고 메시지 표시
-    $('#image').on('click', function(e) {
-        e.preventDefault(); // 기본 동작 막기
-        alert("현재는 이미지 업로드 기능은 사용이 불가능합니다.");
-    });
 
     $('#feedForm').submit(function(e) {
         e.preventDefault();

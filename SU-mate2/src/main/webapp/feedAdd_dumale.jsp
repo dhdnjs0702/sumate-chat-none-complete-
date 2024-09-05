@@ -10,6 +10,7 @@
 <%@ page import="org.json.simple.parser.JSONParser" %>
 <%@ page import="org.json.simple.parser.ParseException" %>
 <%@ page import="java.io.File" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <%
 try {
@@ -60,8 +61,9 @@ try {
     // 이미지 정보 추가
     jsonObj.put("images", ufname);
     
-    // 이미지 URL 생성 및 추가
-    String imageUrl = request.getContextPath() + "/images/" + ufname;
+ // 이미지 URL 생성 및 추가 (파일명을 URL 인코딩)
+    String encodedFileName = URLEncoder.encode(ufname, "UTF-8").replace("+", "%20");
+    String imageUrl = request.getContextPath() + "/images/" + encodedFileName;
     jsonObj.put("imageUrl", imageUrl);
     
     // 세션에서 사용자 ID 가져와서 추가
@@ -85,6 +87,6 @@ try {
     response.setStatus(500);
     out.println("Error: " + e.getMessage());
     e.printStackTrace(new java.io.PrintWriter(out));
-    e.printStackTrace(); // 서버 로그에 스택 트레이스 출력
+    e.printStackTrace(); 
 }
 %>
