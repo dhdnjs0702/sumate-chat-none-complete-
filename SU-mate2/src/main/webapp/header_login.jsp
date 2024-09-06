@@ -8,7 +8,7 @@
 </head>
 <body>
         <div class="header">
-            <div class="logo"></div>
+           
             <div class="title" id="title">SU-mate</div>
             <div class="menu">
                 <a href="roomMate.jsp" class="menu-item">기숙사 룸메이트</a>

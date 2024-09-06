@@ -135,9 +135,12 @@ function redirectToChat(toID, nickname) {
 function show(feeds) {
     var str = "<div class='postit-container'>";
     for (var i = 0; i < feeds.length; i++) {
-        var img = feeds[i].imageUrl, imgstr = ""; // 이미지 URL을 직접 사용
+        var img = feeds[i].imageUrl;
+        var imgstr = "";
         if (img && img.trim() !== "") {
-            imgstr = "<img src='" + img + "' class='postit-image' onerror='this.style.display=\"none\"'>";
+            // 상대 경로를 절대 경로로 변환
+            var fullImageUrl = window.location.origin + img;
+            imgstr = "<img src='" + fullImageUrl + "' class='postit-image' onerror='this.onerror=null; this.src=\"/SU-mate2/images/default-image-svg.svg\"; this.alt=\"이미지 없음\"'>";
         }
 
         var nickname = feeds[i].user ? feeds[i].user.nickname : "Unknown";
@@ -166,7 +169,7 @@ function show(feeds) {
         str += "<div class='postit-options' onclick='event.stopPropagation(); toggleOptions(" + feeds[i].no + ")'>...</div>";
         str += "<div id='options-" + feeds[i].no + "' class='options-dropdown'>";
         str += "<div onclick='redirectToChat(\"" + userID + "\", \"" + nickname + "\")'>채팅하기</div>";
-        if (userID === '<%= userID %>') {
+        if (userID === '<%=userID%>') {
             str += "<div onclick='deletePost(" + feeds[i].no + ")'>글 삭제</div>";
         }
         str += "</div>";
@@ -186,7 +189,7 @@ function addFeed() {
 
 function deletePost(feedNo) {
     if (confirm("이 글을 삭제하시겠습니까?")) {
-        AJAX.call("feedDelete.jsp", { no: feedNo }, function(response) {
+        AJAX.call("feedDelete_dufm.jsp", { no: feedNo }, function(response) {
             if (response.trim() === "success") {
                 alert("글이 삭제되었습니다.");
                 location.reload(); // 페이지 새로고침으로 업데이트

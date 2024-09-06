@@ -83,7 +83,7 @@
         <!--여기까지는 그림과 간단한 설명만 들어갑니다-->
                <div class="feature-content" id="roommate-desc">
             <div class="feature-image">
-                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+                <img src="images/KakaoTalk_Photo_2024-09-06-10-57-59 003.jpeg" alt="Feature Image" class="responsive-image">
             </div>
             <div class="feature-description">
                 <h2>기숙사 룸메이트 매칭 소개</h2>
@@ -94,7 +94,7 @@
         <div class="divider"></div>
         <div class="feature-content" id="dusata-desc">
             <div class="feature-image">
-                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+                <img src="images/KakaoTalk_Photo_2024-09-06-10-57-58 002.jpeg" alt="Feature Image" class="responsive-image">
             </div>
             <div class="feature-description">
                 <h2>두유는 사랑을 타고(두사타) 소개</h2>
@@ -105,7 +105,7 @@
         <div class="divider"></div>
         <div class="feature-content" id="carpool-desc">
             <div class="feature-image">
-                <img src="your-image-path.jpg" alt="Feature Image" class="responsive-image">
+                <img src="images/KakaoTalk_Photo_2024-09-06-10-57-57 001.jpeg" alt="Feature Image" class="responsive-image">
             </div>
             <div class="feature-description">
                 <h2>카풀 매칭 소개</h2>

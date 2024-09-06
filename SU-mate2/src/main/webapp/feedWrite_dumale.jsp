@@ -47,7 +47,7 @@
             </div>
             <div class="form-group">
                 <label for="image">이미지:</label>
-                <input type="file" id="image" name="image" disabled>
+                <input type="file" id="image" name="image">
             </div>
             <button type="submit">글 작성</button>
         </form>

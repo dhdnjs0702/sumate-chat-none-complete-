@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	const title = document.querySelector('.title');
 	   title.addEventListener('click', () => {
-	       window.location.href = 'main_page.html'; // main_page.html로 이동
+	       window.location.href = 'index.html'; // main_page.html로 이동
 	   });
 });
 
