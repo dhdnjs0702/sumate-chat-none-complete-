@@ -32,4 +32,7 @@ ui변경 진행 후에 다시 업로드 하겠습니다
 
 2024 /08 /22
 - 두사타 페이지에 글 삭제 기능이 추가되었습니다.
-  
+
+
+  2024 / 09 /06
+  -index.html, mainPage.jsp, dusata_m, dusata.jsp, mainstyles.css와 images디렉토리에 메인페이지 디자인을 위한 이미지가 추가 및 수정 되었습니다. 
