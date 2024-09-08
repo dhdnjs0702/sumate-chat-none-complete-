@@ -14,7 +14,7 @@
             <div class="menu">
                 <a href="roomMate.jsp" class="menu-item">기숙사 룸메이트</a>
                 <a href="dusata_m.jsp" class="menu-item">두유는 사랑을 타고</a>
-                <a href="carPool.jsp" class="menu-item">카풀</a>
+                
                 <a href="myPage.jsp" class="menu-item">마이페이지</a>
                 <a href="box.jsp" class="menu-item">메시지<span id="unread" class="label label-info"></span></a>
                 <div class="search-bar">
@@ -27,11 +27,10 @@
         
         
     <script>
-        // JavaScript 코드: 'SU-mate' 제목 클릭 시 index.jsp로 이동
+        // JavaScript 코드: 'SU-mate' 제목 클릭 시 index.html로 이동
         document.getElementById('title').addEventListener('click', () => {
-            window.location.href = '../index.html';
+            window.location.href = '/SU_FM/index.html'; // 절대 경로로 수정
         });
     </script>
-</body>
 </body>
 </html>
