@@ -132,7 +132,7 @@ $(document).ready(function() {
 	        success: function(response) {
 	            if (response.trim() === "OK") {
 	                alert("글이 성공적으로 등록되었습니다.");
-	                window.location.href = "dusata_m.jsp"; // 글 목록 페이지로 이동
+	                window.location.href = "dusata_f.jsp"; // 글 목록 페이지로 이동
 	            } else {
 	                alert("글 등록에 실패했습니다: " + response);
 	            }
@@ -147,12 +147,6 @@ $(document).ready(function() {
     $('#content').on('input', function() {
         var charCount = $(this).val().length;
         $('#charCount').text(charCount + " / 100");
-    });
-
-    // 이미지 선택 버튼 클릭 시 경고 메시지 표시
-    $('#image').on('click', function(e) {
-        e.preventDefault(); // 기본 동작 막기
-        alert("현재는 이미지 업로드 기능은 사용이 불가능합니다.");
     });
 </script>
 </html>

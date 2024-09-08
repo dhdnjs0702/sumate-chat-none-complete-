@@ -64,7 +64,7 @@ try {
     // 이미지 처리
     if (ufname != null && ufile != null) {
         // 서버에 저장할 경로 설정
-        String root = application.getRealPath("/") + "images";
+        String root = application.getRealPath(java.io.File.separator);
         File saveDir = new File(root);
         if (!saveDir.exists()) {
             saveDir.mkdirs();

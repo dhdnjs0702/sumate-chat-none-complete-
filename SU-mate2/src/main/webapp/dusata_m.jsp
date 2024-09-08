@@ -105,8 +105,9 @@ function show(feeds) {
         var img = feeds[i].imageUrl;
         var imgstr = "";
         if (img && img.trim() !== "") {
-            // 상대 경로를 절대 경로로 변환
-            var fullImageUrl = window.location.origin + img;
+            // 상대 경로를 절대 경로로 변환, URL을 디코딩하여 사용
+            var fullImageUrl = window.location.origin + decodeURIComponent(img);
+            
             imgstr = "<img src='" + fullImageUrl + "' class='postit-image' onerror='this.onerror=null; this.src=\"/SU-mate2/images/default-image-svg.svg\"; this.alt=\"이미지 없음\"'>";
         }
 
@@ -164,6 +165,23 @@ function deletePost(feedNo) {
                 alert("글 삭제에 실패했습니다.");
             }
         });
+    }
+}
+
+function redirectToChat(toID, nickname) {
+    var userID = '<%= userID %>'; // 현재 로그인한 사용자의 ID를 JSP에서 가져옴
+
+    if (toID && toID.trim() !== "") {
+        if (userID === toID) {
+            alert("자기자신과는 채팅할 수 없습니다.");
+        } else {
+            var confirmMessage = nickname + "님과 채팅하시겠습니까?";
+            if (confirm(confirmMessage)) { 
+                window.location.href = "chat.jsp?toID=" + encodeURIComponent(toID);
+            }
+        }
+    } else {
+        alert("잘못된 유저 정보입니다.");
     }
 }
 

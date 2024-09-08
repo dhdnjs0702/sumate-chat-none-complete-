@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %> 
-<%@ page import="dao.FeedDAO_dumale" %>
+<%@ page import="dao.FeedDAO_dufemale" %>
 <%@ page import="dao.FeedObj" %>
 <%@ page import="org.json.simple.*" %>
 <%@ page import="org.json.simple.parser.*" %>
@@ -58,21 +58,6 @@
         <button id="loadMoreButton" onclick="loadMoreFeeds()">작성글 더 보기</button>
     </div>
 </div>
-<%
-            if(userID != null){
-                
-        %>
-         <script type="text/javascript">
-            $(document).ready(function(){
-                getUnread();
-                getInfiniteUnread();
-                
-                getInfiniteBox();
-            });
-         </script>
-        <%
-            }
-        %>
 
 <%@ include file="footer.jsp" %> <!-- 풋터 부분 -->
 </div>
@@ -93,7 +78,6 @@ function start(uid) {
 
 $(document).ready(function() {
     start('<%=userID%>');
-    
     
     $('.feed-add-button').off('click').on('click', addFeed);
     $('#loadMoreButton').off('click').on('click', loadMoreFeeds);
@@ -138,8 +122,9 @@ function show(feeds) {
         var img = feeds[i].imageUrl;
         var imgstr = "";
         if (img && img.trim() !== "") {
-            // 상대 경로를 절대 경로로 변환
-            var fullImageUrl = window.location.origin + img;
+            // 상대 경로를 절대 경로로 변환, URL을 디코딩하여 사용
+            var fullImageUrl = window.location.origin + decodeURIComponent(img);
+            
             imgstr = "<img src='" + fullImageUrl + "' class='postit-image' onerror='this.onerror=null; this.src=\"/SU-mate2/images/default-image-svg.svg\"; this.alt=\"이미지 없음\"'>";
         }
 
