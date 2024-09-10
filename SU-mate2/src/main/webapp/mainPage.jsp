@@ -71,13 +71,7 @@
                     </div>
                 </div>
 
-                <div class="carpool-item" id="carpool-item">
-                    <div class="carpool-image"></div>
-                    <div class="carpool-details">
-                        <div class="carpool-name">카풀</div>
-                        <div class="carpool-bio">같은 방향으로 가는 친구를 찾고 있나요? 카풀메이트에서 함께 이동할 친구를 구하세요!</div>
-                    </div>
-                </div>
+           
             </div>
             <div class="divider"></div>
         <!--여기까지는 그림과 간단한 설명만 들어갑니다-->
@@ -103,16 +97,6 @@
             </div>
         </div>
         <div class="divider"></div>
-        <div class="feature-content" id="carpool-desc">
-            <div class="feature-image">
-                <img src="images/KakaoTalk_Photo_2024-09-06-10-57-57 001.jpeg" alt="Feature Image" class="responsive-image">
-            </div>
-            <div class="feature-description">
-                <h2>카풀 매칭 소개</h2>
-                <p>혼자 등교하기 비효율적이고 심심하신가요? 카풀메이트에서 함께 이동할 친구를 구하세요. 교통비도 절약하고, 환경도 보호하세요!</p>
-                <p>지금 바로 SU-mate와 함께 여러분의 카풀 메이트를 찾아보세요!</p>
-            </div>
-        </div>
     </div>
     
     <%
